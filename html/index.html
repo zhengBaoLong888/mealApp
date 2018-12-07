@@ -42,7 +42,7 @@
 			</div>
 		</header>
 		<div class="clearBoth"></div>
-		
+
 		<div class="classifyBox">
 			<ul class="">
 
@@ -189,24 +189,21 @@
 		});
 
 
-		var shopNameArray = [];
 		var token = localStorage.getItem("token");
 		var Authorization = "Bearer " + token;
-		var taskProIdVal = ''; //proId
 		var taskeSlectorIndex, orderGoodsName, picture, detal;
 		var base = localStorage.getItem("base");
-		var relatedobj = {};
-		var objlt = {};
+		var a = 0;
+		var b = 0;
+		var c = 0;
 
 		var gallery = mui('.mui-slider');
 		gallery.slider({
 			interval: 2000 //自动轮播周期，若为0则不自动播放，默认为0；
 		});
 
-
-
 		//初始化方法
-		function initStore(_latitude,_longitude) {
+		function initStore(_latitude, _longitude) {
 			$.ajax({
 				type: "post",
 				headers: {
@@ -222,6 +219,7 @@
 				ContentType: "application/json",
 				success: function(result) {
 					console.log(result);
+					localStorage.setItem("storesInformation", JSON.stringify(result));
 					if (result.data == '') {
 						var shopID = null;
 						var enterpriseID = null;
@@ -238,12 +236,12 @@
 						$('#headAddress').html(shopNameHtml);
 						$('#phone').html(result.data[0].phone);
 					}
-					relatedobj = {
+					var relatedobj = {
 						sh: shopID,
 						en: enterpriseID,
 						pi: getpinpaiID,
 						sn: shopNameHtml,
-						ph: phoneHtml
+						tel: phoneHtml
 					}
 					localStorage.setItem('reltArray', JSON.stringify(relatedobj));
 					if (relatedobj.sh == null) {
@@ -278,7 +276,7 @@
 					} else {
 						var getRelatedobj = JSON.parse(localStorage.getItem("reltArray"));
 						$('#headAddress').html(getRelatedobj.sn);
-						$('#phone').html(getRelatedobj.ph);
+						$('#phone').html(getRelatedobj.tel);
 						if (getRelatedobj.sh == null) {
 							$('.loding').hide();
 						} else {
@@ -289,10 +287,7 @@
 
 				}
 			});
-
-
 		});
-
 
 
 
@@ -418,7 +413,7 @@
 			var getRelatedobj = JSON.parse(localStorage.getItem("reltArray"));
 			getGoods(getRelatedobj.sh, getRelatedobj.en, getpinpaiID);
 		})
-		
+
 		//门店小类型获取
 		function getShopsType() {
 			var htmlTypeShop = '';
@@ -438,7 +433,7 @@
 				ContentType: "application/json",
 				success: function(result) {
 					console.log(result);
-					for(var i = 0; i < result.data.length; i++) {
+					for (var i = 0; i < result.data.length; i++) {
 						htmlTypeShop += "<li data-id=" + result.data[i].id + ">"
 						htmlTypeShop += "<img src='" + result.data[i].fileUrl + "' >"
 						htmlTypeShop += "<p>" + result.data[i].typeName + "</p>"
@@ -447,16 +442,16 @@
 					$('.classifyBox ul').html(htmlTypeShop);
 					$('.classifyBox ul li').click(function() {
 						var typeId = $(this).attr("data-id");
-						localStorage.setItem("typeId",typeId);
+						localStorage.setItem("typeId", typeId);
 						location.href = "orderList.html";
 					})
 				}
 			});
 		}
 		getShopsType();
-		
-		
-		
+
+
+
 		function getGoods(_shopId, _enterpriseId, _pinpaiId) {
 			var productListHtml = '';
 			$('.pirdocuts').html('');
@@ -619,17 +614,9 @@
 			document.querySelector('.new_tasteChoose').removeEventListener('touchmove', bodyScroll, false);
 		});
 
-		$('.list_tab div').click(function() {
-			$(this).addClass('selectedAction').siblings().removeClass('selectedAction');
-			alert('执行成功');
-		})
 
 		var stateid, regionId, provinceId, cityId;
-		var guojia = {};
-		var daqu = {};
-		var shengfen = {};
-		var chengshi = {};
-		var dianpu = {};
+
 		//国家
 		//			function state() {
 		//				var htmlState = '';
@@ -672,6 +659,8 @@
 		//			});
 		//		}
 		//		region();
+
+
 		//省份
 		function province() {
 			var htmlProvince = '';
@@ -718,18 +707,18 @@
 			});
 		}
 
-		$('#region').change(function() {
-			regionId = $(this).val();
-			province();
-			$('#htmlCity').attr("selected", "selected");
-			$('#shopName').attr("selected", "selected");
-		})
 		$('#province').change(function() {
 			provinceId = $(this).val();
 			city();
-			$('#shopName').attr("selected", "selected");
+			a = 1;
+			b = 0;
+			c = 0;
 		})
+
+
 		$('#city').change(function() {
+			b = 1;
+			c = 0;
 			var htmlShopName = '';
 			cityId = $(this).val();
 			$.ajax({
@@ -750,31 +739,42 @@
 				success: function(result) {
 					htmlShopName += "<option id='shopName' value=''>请选择店铺</option>"
 					for (var i = 0; i < result.data.length; i++) {
-						htmlShopName += "<option value='" + result.data[i].shopId + "'>" + result.data[i].shopName + "</option>"
+						htmlShopName += "<option data-phone='" + result.data[i].phone + "' data-en='" + result.data[i].enterpriseId +
+							"' data-id='" + result.data[i].shopId + "' value='" + result.data[i].shopName + "'>" + result.data[i].shopName +
+							"</option>"
 					}
 					$('#shopStore').html(htmlShopName);
 				}
 			});
 		})
-		var bl = 0;
+
+		var switchSelectedIndex;
 		$('#shopStore').change(function() {
-			bl = 1;
+			switchSelectedIndex = $(this).get(0).selectedIndex;
+			c = 1;
 		})
+
 		$('.headSwitchStores_right').click(function() {
-			var getStoresArray = JSON.parse(localStorage.getItem("setStoresArray"));
+			var storesInformation = JSON.parse(localStorage.getItem("storesInformation"));
 			var html = '';
-			for (e in getStoresArray) {
+			for (e in storesInformation.data) {
 				if (e == 5) {
 					break;
 				} else {
-					html += "<li data-id='" + getStoresArray[e].shopId + "' data-enterpriseId = '" + getStoresArray[e].enterpriseId +
-						"' data-name='" + getStoresArray[e].shopName + "'>"
-					html += "<img class='storesImg' src='../img/discover_5.png' />"
-					html += "<span>" + getStoresArray[e].shopName + "</span>"
-					if (getStoresArray[e].distance == null) {
-
+					html += "<li data-phone='" + storesInformation.data[e].phone + "' data-id='" + storesInformation.data[e].shopId +
+						"' data-enterpriseId = '" + storesInformation.data[e].enterpriseId + "' data-name='" + storesInformation.data[e]
+						.shopName + "'>"
+					if (storesInformation.data[e].businessesImg == '') {
+						html += "<img class='storesImg' src='../img/discover_5.png' />"
 					} else {
-						html += "<div style='margin-top:10px;'>" + getStoresArray[e].distance.toFixed(0) + "米<div>"
+						html += "<img class='storesImg' src='" + storesInformation.data[e].businessesImg[0] + "' />"
+					}
+
+					html += "<span>" + storesInformation.data[e].shopName + "</span>"
+					if (storesInformation.data[e].distance == null) {
+						html += "<div style='margin-top:10px;'>未知<div>"
+					} else {
+						html += "<div style='margin-top:10px;'>" + storesInformation.data[e].distance.toFixed(0) + "米<div>"
 					}
 					html += "</li>"
 				}
@@ -787,17 +787,20 @@
 				var shopID = $(this).attr("data-id");
 				var enterpriseID = $(this).attr("data-enterpriseId");
 				var shopNameHtml = $(this).attr("data-name");
+				var phoneData = $(this).attr("data-phone");
 				var relatedobj = {
 					sh: shopID,
 					en: enterpriseID,
 					pi: getpinpaiID,
-					sn: shopNameHtml
+					sn: shopNameHtml,
+					tel: phoneData
 				}
-				//getProductType(relatedobj.sh, relatedobj.en, getpinpaiID);
-				getGoods(relatedobj.sh, relatedobj.en, getpinpaiID);
 				localStorage.setItem("reltArray", JSON.stringify(relatedobj));
+				getGoods(relatedobj.sh, relatedobj.en, getpinpaiID);
+				getShopsType();
 				$('.switchStore').hide();
 				$('#headAddress').html(relatedobj.sn);
+				$('#phone').html(relatedobj.tel);
 				var gat = JSON.parse(localStorage.getItem("dataList"));
 				gat = [];
 				localStorage.setItem("dataList", JSON.stringify(gat));
@@ -809,7 +812,6 @@
 				location.href = hrefs + '#' + relatedobj.sh
 			})
 			document.querySelector('.switchStore').addEventListener('touchmove', bodyScroll, false);
-
 		})
 
 		$('.close').click(function() {
@@ -820,14 +822,53 @@
 			document.querySelector('.switchStore').removeEventListener('touchmove', bodyScroll, false);
 			$('.switchStore').hide();
 		})
+
 		$('#qd').click(function() {
-			if (bl == 1) {
-				$('.switchStore').hide();
-				document.querySelector('.switchStore').removeEventListener('touchmove', bodyScroll, false);
+			var varPhone, varEn, varShopId, varShopName;
+
+			if (a == 0) {
+				mui.toast('请选择省市');
+			} else if (b == 0) {
+				mui.toast('请选择区域');
+			} else if (c == 0) {
+				mui.toast('请选择店铺');
 			} else {
-				alert("请选择店铺")
+				$('#shopStore option').each(function() {
+					if ($(this).index() == switchSelectedIndex) {
+						varShopName = $(this).val();
+						varPhone = $(this).attr("data-phone"); //电话
+						varEn = $(this).attr("data-en"); //加盟id
+						varShopId = $(this).attr("data-id"); //门店id
+						return false;
+					} else {}
+				})
+
+				var relatedobj = {
+					sh: varShopId,
+					en: varEn,
+					pi: getpinpaiID,
+					sn: varShopName,
+					tel: varPhone
+				}
+				console.log(relatedobj);
+				localStorage.setItem("reltArray", JSON.stringify(relatedobj));
+				var reltArray = JSON.parse(localStorage.getItem("reltArray"));
+				getGoods(relatedobj.sh, relatedobj.en, getpinpaiID);
+				getShopsType();
+				var hrefs = location.href
+				if (hrefs.indexOf("#") != -1) {
+					hrefs = hrefs.split("#")[0];
+				}
+				location.href = hrefs + '#' + relatedobj.sh
+				$('#phone').html(reltArray.tel);
+				$('#headAddress').html(reltArray.sn);
+				$('.switchStore').hide();
 			}
 		})
+
+		//禁止滑动底层容器
+		document.querySelector('.switchStore').removeEventListener('touchmove', bodyScroll, false);
+
 		$('.classificationActivities').click(function() {
 			var Ca = $(this).attr("data-rel");
 			localStorage.setItem("ca", Ca);

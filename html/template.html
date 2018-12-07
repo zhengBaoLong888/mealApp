@@ -157,23 +157,25 @@
 				$('.mui-content').load('index.html');
 				$('.fontColor').removeClass("navAction");
 				$(this).find(".fontColor").addClass("navAction");
+				$("title").html("首页");
 			})
 			$('#discover').click(function() {
 				$('.mui-content').load('discover.html');
 				$('.fontColor').removeClass("navAction");
 				$(this).find(".fontColor").addClass("navAction");
-
+				$("title").html("发现");
 			})
 			$('#indent').click(function() {
 				$('.mui-content').load('myOrder.html');
 				$('.fontColor').removeClass("navAction");
 				$(this).find(".fontColor").addClass("navAction");
-
+				$("title").html("订单");
 			})
 			$('#my').click(function() {
 				$('.mui-content').load('my.html');
 				$('.fontColor').removeClass("navAction");
 				$(this).find(".fontColor").addClass("navAction");
+				$("title").html("我的");
 			})
 
 

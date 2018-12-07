@@ -1,6 +1,3 @@
-var getpinpaiID;
-var ua = navigator.userAgent.toLowerCase();
-if(ua.match(/MicroMessenger/i) == "micromessenger") {
 	function getQueryPinpaiId(variable) {
 		var query = window.location.search.substring(1);
 		var vars = query.split("&");
@@ -12,10 +9,7 @@ if(ua.match(/MicroMessenger/i) == "micromessenger") {
 		}
 		return(false);
 	}
-	getpinpaiID = getQueryPinpaiId("pinpaiID");
-} else {
-	getpinpaiID = 1;
-}
+	var	getpinpaiID = getQueryPinpaiId("pinpaiID");
 
 function getDate() {
 	//获取当前时间
@@ -91,12 +85,12 @@ function getTask(_proIdVal) {
 		},
 		url: base + "sale_inte/product/tasteChoose.action",
 		data: {
-			"pinpaiID": getpinpaiID,
+			"pinpaiID": 1,
 			"proId": _proIdVal
 		},
 		ContentType: "application/json",
 		success: function(result) {
-			alert(JSON.stringify(result));
+			//alert(JSON.stringify(result));
 			var cpList = JSON.parse(localStorage.getItem("products"));
 			console.log(result);
 			var ge1 = '';

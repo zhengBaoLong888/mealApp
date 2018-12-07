@@ -54,8 +54,10 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript " src="../js/mui.min.js "></script>
 		<script type="text/javascript" src="../js/script.js"></script>
 		<script>
+			mui.init();
 			var localityDataList = JSON.parse(localStorage.getItem('dataList')); //购物车基础数组
 			var relatedobj = JSON.parse(localStorage.getItem('reltArray'));
 			var products = JSON.parse(localStorage.getItem("products"));
@@ -584,7 +586,8 @@
 			$('.clear').click(function() {
 				var empty = JSON.parse(localStorage.getItem("dataList"));
 				if(empty.length == 0) {
-					alert("购物车已经是空");
+					// alert("购物车已经是空");
+					mui.toast('购物车已经是空');
 				} else {
 					empty = [];
 					localStorage.setItem("dataList", JSON.stringify(empty));
@@ -649,7 +652,8 @@
 						$('.panel_ul li').click(function() {
 							var arrgs = JSON.parse(localStorage.getItem("dataList"));
 							if(arrgs.length == 0) {
-								alert("请选择商品后再选择优惠券");
+								// alert("请选择商品后再选择优惠券");
+								mui.toast('请选择商品后再选择优惠券');
 							} else {
 								var dataRel = $(this).attr("data-rel");
 								if(dataRel == 0) {
@@ -744,7 +748,8 @@
 					success: function(resultAsx) {
 						console.log(resultAsx);
 						if(resultAsx.data.totalPrice == '0.00') {
-							alert("下单成功");
+							// alert("下单成功");
+							mui.toast('下单成功');
 							var emptyArr = [];
 							localStorage.setItem("dataList",JSON.stringify(emptyArr));
 							location.reload();
@@ -933,9 +938,11 @@
 					ert += Number(getLocaShopCat[f].num);
 				}
 				if(getLocaShopCat.length == 0 || getLocaShopCat == null) {
-					alert('购物车为空,请选择商品后结算');
+					// alert('购物车为空,请选择商品后结算');
+					mui.toast('购物车为空,请选择商品后结算');
 				}else if(isMoble == 0 || isMoble == null){
-					alert("请先完善个人信息");
+					// alert("请先完善个人信息");
+					mui.toast('请先完善个人信息');
 					location.href = 'personal_information.html';
 				} else {
 					var ice = [];

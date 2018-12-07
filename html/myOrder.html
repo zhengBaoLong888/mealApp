@@ -11,27 +11,16 @@
 	</head>
 
 	<body class="entirety-bg font-fam-style" style="background-color: #fff;">
-			<article class="commen-style">
-				<aside class="commenBack-head">
-					<a id="Icloud">订单</a>
-				</aside>
-				
-			</article>
-			<article class="orderDetails">
-				<div class="orderDetails-title">
-					<img class="houseIconImg" src="../img/myOther_1.png" />
-					<span class="storeEntrance"></span>
-					<!--<img class="back-pir" src="../img/myOther_2.png"/>-->
-				</div>
-				<span id="ddDisplay" style="color: #f65c04;font-size: 19px;">订单已生成</span>
-			</article>
-			<div id="load">加载中...</div>
-			<div class="store-main-div">
+		<div id="load">加载中...</div>
+		<div class="store-main-div">
 
-			</div>
-			<div class="nullYoat">订单为空~</div>
-
+		</div>
+		<div class="nullYoat">订单为空~</div>
+		<div class="marks">
+			<div id="qrcode"></div>
+		</div>
 		<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../js/qrcode.min.js"></script>
 		<script>
 			var information = JSON.parse(localStorage.getItem("reltArray"));
 			var token = localStorage.getItem("token");
@@ -42,7 +31,6 @@
 				var html = '';
 				var html2 = '';
 				var ItemSum = 0;
-				$('.storeEntrance').html(information.sn);
 				$.ajax({
 					type: "post",
 					headers: {
@@ -143,6 +131,7 @@
 								}
 								html += html2
 								html += "<div class='creatTD'>下单时间：<span>" + result.data.rows[i].createTime + "</span></div>"
+								html += "<div class='creatTD'>所属门店：<span>" + result.data.rows[i].shopName + "</span></div>"
 								html += "<div class='creatTD'>订单编号：<span>" + result.data.rows[i].ordeNo.slice(6) + "</span></div>"
 								if(result.data.rows[i].status == 2) {
 									$('.goPayment').show();
@@ -156,26 +145,32 @@
 									html += "<span class='deleteOrder'>删除</span>"
 									html += "</article>"
 								} else if(result.data.rows[i].status == 3) {
-									html += "<div class='creatTD'>取货码：<span>" + result.data.rows[i].pickUpCode + "</span></div>"
+									html += "<input class='pickUpCode' type='hidden' value='" + result.data.rows[i].pickUpCode + "'>"
+									html += "<div class='creatTD'>取货码：<span>" + result.data.rows[i].pickUpCode + "</span><span class='getCode'>二维码取货</span></div>"
 									html += "<div class='status'>状态：<span id='statusVal'>等待制作中</span></div>"
 									html += "<article class='combined'>"
 									//html += "<span>共" + ItemSum + "件商品</span>"
 									html += "<span>合计：¥" + result.data.rows[i].totalPrice + "</span>"
 									html += "</article>"
+//									html += "<div class='getCode'>获取取货码</div>"
 								} else if(result.data.rows[i].status == 4) {
-									html += "<div class='creatTD'>取货码：<span>" + result.data.rows[i].pickUpCode + "</span></div>"
+									html += "<input class='pickUpCode' type='hidden' value='" + result.data.rows[i].pickUpCode + "'>"
 									html += "<div class='status'>状态：<span id='statusVal'>制作中</span></div>"
+									html += "<div class='creatTD'>取货码：<span>" + result.data.rows[i].pickUpCode + "</span><span class='getCode'>二维码取货</span></div>"
 									html += "<article class='combined'>"
 									//html += "<span>共" + ItemSum + "件商品</span>"
 									html += "<span>合计：¥" + result.data.rows[i].totalPrice + "</span>"
 									html += "</article>"
+//									html += "<div class='getCode'>获取取货码</div>"
 								} else if(result.data.rows[i].status == 5) {
-									html += "<div class='creatTD'>取货码：<span>" + result.data.rows[i].pickUpCode + "</span></div>"
+									html += "<input class='pickUpCode' type='hidden' value='" + result.data.rows[i].pickUpCode + "'>"
 									html += "<div class='status'>状态：<span id='statusVal'>已完成</span></div>"
+									html += "<div class='creatTD'>取货码：<span>" + result.data.rows[i].pickUpCode + "</span><span class='getCode'>二维码取货</span></div>"
 									html += "<article class='combined'>"
 									//html += "<span>共" + ItemSum + "件商品</span>"
 									html += "<span>合计：¥" + result.data.rows[i].totalPrice + "</span>"
 									html += "</article>"
+//									html += "<div class='getCode'>获取取货码</div>"
 								} else if(result.data.rows[i].status == 7) {
 									html += "<div class='status'>状态：<span id='statusVal'>退单中-货料不足</span></div>"
 									html += "<article class='combined'>"
@@ -183,10 +178,21 @@
 									html += "<span>合计：¥" + result.data.rows[i].totalPrice + "</span>"
 									html += "</article>"
 								}
-
 								html += "</article>"
 							}
 							$('.store-main-div').html(html);
+
+							$('.getCode').click(function() {
+								$('#qrcode').empty();
+								var pickUpCode = $(this).parents(".creatTD").siblings(".pickUpCode").val();
+								var qrcode = new QRCode(document.getElementById("qrcode"), {
+									width: 400,
+									height:400
+								});
+								qrcode.makeCode(pickUpCode);
+								$('.marks').show();
+								
+							})
 						}
 						$('.goPayment').click(function() {
 							var orderNo = $(this).parent().siblings('.orderNo').val();
@@ -251,11 +257,13 @@
 									"orderId": orderId_delete
 								},
 								success: function(result) {
-									if(result.msg == 'yes'){
-										alert("删除成功");
+									if(result.msg == 'yes') {
+										// alert("删除成功");
+										mui.toast('删除成功');
 										orderList();
-									}else if(result.code == '1186'){
-										alert("订单已经无法删除");
+									} else if(result.code == '1186') {
+										// alert("订单已经无法删除");
+										mui.toast('订单已经无法删除');
 									}
 								}
 							});
@@ -269,12 +277,15 @@
 				});
 
 			}
-			if(information.sh == null){
+			if(information.sh == null) {
 				$('#load').hide();
-			}else{
+			} else {
 				orderList();
 			}
-			
+
+			$('.marks').click(function() {
+				$(this).hide();
+			})
 		</script>
 	</body>
 
