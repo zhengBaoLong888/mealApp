@@ -63,7 +63,9 @@
 						</div>
 					</div>
 				</aside>
-				<a class="diyIcon" href="shoppingTrolley.html"><img id="catIcon" src="../img/index_shoppingCart.png" /></a>
+				<a class="diyIcon" onclick="jumpPage();">
+					<img id="catIcon" src="../img/index_shoppingCart.png" />
+				</a>
 
 				<div class="priMask">
 					<div class="maskGoodsDetail">
@@ -78,6 +80,9 @@
 						<div id="introduce">我是新品，相比苹果沙冰，我的口感要更好， 在这个夏天来一杯是最合适不过了。</div>
 					</div>
 				</div>
+
+				<!-- <a id="csbtn" href="discover_sub_2.html">测试按钮</a> -->
+
 		</div>
 		<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
 		<script type="text/javascript" src="../js/script.js"></script>
@@ -90,7 +95,7 @@
 			var dataArray = {};
 			var dataxAx = {};
 			var taskProIdVal = ''; //proId
-			var taskeSlectorIndex, orderGoodsName, picture,detal;
+			var taskeSlectorIndex, orderGoodsName, picture, detal;
 			//var pinPaiId = '33';
 			console.log(goodsList);
 
@@ -113,11 +118,11 @@
 				var kw1_name = '';
 
 				//加料
-				if($('.row2_type2').length == 0) {
+				if ($('.row2_type2').length == 0) {
 					$('.row2_type2').html('此商品暂不能加料');
 				} else {
 					$('.row2_type2 li').each(function() {
-						if($(this).hasClass('action_makes')) {
+						if ($(this).hasClass('action_makes')) {
 							jl1_send = $(this).attr("data-id");
 							jl2_send = $(this).attr("data-ingredientprice");
 							jl1_name = $(this).attr("data-name");
@@ -127,7 +132,7 @@
 				}
 				//口味
 				$('.kw1 li').each(function() {
-					if($(this).hasClass('action_makes')) {
+					if ($(this).hasClass('action_makes')) {
 						kw1_send = $(this).attr("data-id");
 						kw1_name = $(this).attr("data-name");
 						return false;
@@ -140,7 +145,8 @@
 				var ispresented = $('.list_liStyle').eq(taskeSlectorIndex).attr("data-ispresented"); //赠送
 				var isdiscount = $('.list_liStyle').eq(taskeSlectorIndex).attr("data-isdiscount"); //打折
 
-				getGoodsArray(jl1_send, jl1_name, jl2_send, kw1_send, kw1_name, ismoneyoff, isbargain, ispresented, isdiscount, proId_val, proName);
+				getGoodsArray(jl1_send, jl1_name, jl2_send, kw1_send, kw1_name, ismoneyoff, isbargain, ispresented, isdiscount,
+					proId_val, proName);
 				getShopCatNum();
 				$('#explain,.new_tasteChoose').hide();
 				document.querySelector('.new_tasteChoose').removeEventListener('touchmove', bodyScroll, false);
@@ -164,47 +170,64 @@
 					success: function(result) {
 						var text_val = $('#text_val').val().replace(/\s+/g, ""); //去除空格
 						$('.list').html('');
-						if(text_val == '') {
+						if (text_val == '') {
 							$('.list').html('搜索商品结果为空');
 						} else {
 							var html = '';
-							for(i in goodsList) {
+							for (i in goodsList) {
 								var a1 = '';
 								var activity1 = '';
 								var activity2 = '';
 								var activity3 = '';
 								var activity4 = '';
-								if(goodsList[i].proName.indexOf(text_val) != -1) {
-									html += "<li class='list_liStyle' data-isBargain='" + goodsList[i].isBargain + "' data-isPresented='" + goodsList[i].isPresented + "'  data-isDiscount='" + goodsList[i].isDiscount + "' data-isMoneyOff='" + goodsList[i].isMoneyOff + "'>"
+								if (goodsList[i].proName.indexOf(text_val) != -1) {
+									html += "<li class='list_liStyle' data-isBargain='" + goodsList[i].isBargain + "' data-isPresented='" +
+										goodsList[i].isPresented + "'  data-isDiscount='" + goodsList[i].isDiscount + "' data-isMoneyOff='" +
+										goodsList[i].isMoneyOff + "'>"
 									html += "<ul class='list_sub_ul'>"
 									html += "<img class='picture' src='" + goodsList[i].imgs[0].path + "' />"
 									html += "<li class='products_description'>"
 									html += "<input class='inputImg' type='hidden' value='" + goodsList[i].imgs[0].path + "'/>"
 									html += "<div class='list_sub_title'>" + goodsList[i].proName + "</div>"
-									html += "<p class='kyo'>价格￥<span class='price' style='color:#ea5d58;margin:0;'>" + goodsList[i].price + "</span></p>"
+									html += "<p class='kyo'>价格￥<span class='price' style='color:#ea5d58;margin:0;'>" + goodsList[i].price +
+										"</span>"
+									for (var q = 0; q < result.data.length; q++) {
+										if (result.data[q].planType == 3 && goodsList[i].isBargain == 1) {
+											html += "<span style='margin-left:20px;text-decoration:line-through;'>原价:" + goodsList[i].origionPrice +
+												"元</span>"
+										} else {
+
+										}
+									}
+									html += "</p>"
 									html += "<div class='order-bgHide spms'>" + goodsList[i].remark + "</div>"
 									html += "</li>"
 									html += "</ul>"
 									html += "<div class='clearBoth'></div>"
 									html += "<div class='withReducedActivity'>"
-									for(j in result.data) { //活动数据
-										if(result.data[j].planType == 4) {
+									for (j in result.data) { //活动数据
+										if (result.data[j].planType == 4) {
 											a1 += "<span>买" + result.data[j].upToCount + "赠" + result.data[j].freeCount + "</span>"
 											a1 += "<span class='comma'>,</span>"
 										} else {}
 
-										if(goodsList[i].isBargain == true && goodsList[i].isBargain == 1 && result.data[j].planType == 3) { //特价
-											activity1 = "<section style='background-image: url(../img/tejia.png);'>" + result.data[j].planName + "</section>"
+										if (goodsList[i].isBargain == true && goodsList[i].isBargain == 1 && result.data[j].planType == 3) { //特价
+											activity1 = "<section style='background-image: url(../img/tejia.png);'>" + result.data[j].planName +
+												"</section>"
 										} else {}
-										if(goodsList[i].isPresented == true && goodsList[i].isPresented == 1 && result.data[j].planType == 4) { //买赠	
-											activity2 = "<section class='s_mz' style='background-image: url(../img/manzeng.png);'>" + a1 + "</section>"
+										if (goodsList[i].isPresented == true && goodsList[i].isPresented == 1 && result.data[j].planType == 4) { //买赠	
+											activity2 = "<section class='s_mz' style='background-image: url(../img/manzeng.png);'>" + a1 +
+												"</section>"
 										} else {}
-										if(goodsList[i].isDiscount == true && goodsList[i].isDiscount == 1 && result.data[j].planType == 1) { //打折
+										if (goodsList[i].isDiscount == true && goodsList[i].isDiscount == 1 && result.data[j].planType == 1) { //打折
 											var ratio = result.data[j].ratio / 10;
-											activity3 = "<section style='background-image: url(../img/zhekou.png);' data-radiu='" + result.data[j].ratio + "'>" + ratio + "折</section>"
+											activity3 = "<section style='background-image: url(../img/zhekou.png);' data-radiu='" + result.data[j].ratio +
+												"'>" + ratio + "折</section>"
 										} else {}
-										if(goodsList[i].isMoneyOff == true && goodsList[i].isMoneyOff == 1 && result.data[j].planType == 2) { //满减
-											activity4 = "<section style='background-image: url(../img/manjian.png);'data-upToPrice='" + result.data[j].upToPrice + "' 'data-upToPrice='" + result.data[j].offPrice + "'>满" + result.data[j].upToPrice + "减" + result.data[j].offPrice + "</section>"
+										if (goodsList[i].isMoneyOff == true && goodsList[i].isMoneyOff == 1 && result.data[j].planType == 2) { //满减
+											activity4 = "<section style='background-image: url(../img/manjian.png);'data-upToPrice='" + result.data[
+													j].upToPrice + "' 'data-upToPrice='" + result.data[j].offPrice + "'>满" + result.data[j].upToPrice +
+												"减" + result.data[j].offPrice + "</section>"
 										} else {}
 									}
 									html += activity1
@@ -220,7 +243,7 @@
 
 								}
 							}
-							if($('.list').is(":empty")) {
+							if ($('.list').is(":empty")) {
 								$('.list').html('搜索商品结果为空');
 							}
 						}

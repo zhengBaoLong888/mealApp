@@ -1,16 +1,128 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta name="viewport" content="width=640,minimum-scale=0.4,maximum-scale=2.0,user-scalable=no" />
-		<title>活动介绍</title>
-		<link href="../css/mui.css" rel="stylesheet" />
-		<link rel="stylesheet" href="../css/commen.css" />
-		<link rel="stylesheet" href="../css/discover_sub_2.css" />
-	</head>
-	<body class="entirety-style" style="background-color: #fb9322;">
-		<div class="mui-content">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=640,minimum-scale=0.4,maximum-scale=2.0,user-scalable=no" />
+	<title>活动介绍</title>
+	<link rel="stylesheet" href="../css/commen.css" />
+	<link rel="stylesheet" href="../css/discover_sub_2.css" />
+</head>
+
+<body class="entirety-style" style="background-color: #f6e382;font-family:'PingFang SC Bold';">
+	<div class="content">
+		<div class="header">
+			<div class="head_row1">开业嗨皮会场</div>
+			<div class="head_banner">
+				<img src="../img/coups_banner.jpg" />
+			</div>
 		</div>
-	</body>
+		<div class="main">
+			<div class="main_announcementRow1">
+				<div class="main_announcementCol1">
+					<span class="main_announcementCol1Row1">抢购
+						<br />时间</span>
+					<div class="main_announcementCol1Row2">
+						<p>每天12点~19点整点限量开枪</p>
+						<p style="font-size: 18px;">开抢倒计时：00：05：00.00</p>
+					</div>
+				</div>
+				<div class="main_announcementCol2">我要
+					<br />分享</div>
+			</div>
+			<div class="main_announcementRow2">
+				<p style="font-size: 24px;color: #000;font-weight: bold;margin-bottom: 5px;">活动规则：</p>
+				<p>每天整点(12点、13点、14点、15点、16点、17点、18点、19点)准时发放代金券，代金券每次发放时间为5分钟，5分钟之可随心所欲抢,活动期间用户可通过直接点击的方式抢取代金券,代金券数量有限，先到先得，领完为止。</p>
+			</div>
+
+			<ul class="coupsList">
+				<li>
+					<p class="coupsName">￥
+						<span>10元</span>
+					</p>
+					<aside>
+						<p>1、不限饮品;</p>
+						<p>2、一个订单可使用一张; </p>
+						<p>3、代金券不可兑换现金,不找零;</p>
+						<p>4、使用代金券时不得参加其他促销活动的优惠; </p>
+						<p>5、有效期为三天.</p>
+					</aside>
+				</li>
+				<li>
+					<p class="coupsName">￥
+						<span>10元</span>
+					</p>
+					<aside>
+						<p>1、不限饮品;</p>
+						<p>2、一个订单可使用一张; </p>
+						<p>3、代金券不可兑换现金,不找零;</p>
+						<p>4、使用代金券时不得参加其他促销活动的优惠; </p>
+						<p>5、有效期为三天.</p>
+					</aside>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+	<script>
+		var relatedobj = JSON.parse(localStorage.getItem('reltArray'));
+		var token = localStorage.getItem("token");
+		var Authorization = "Bearer " + token;
+		var base = localStorage.getItem("base");
+
+		function getWeMeal() {
+			var appid, tp, noncestr, sie;
+			var urlHref = location.href.split('#')[0];
+			$.ajax({
+				type: "post",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+					"Authorization": Authorization
+				},
+				data: {
+					"pinpaiId": 1,
+					"url": urlHref
+				},
+				dataType: "json",
+				async: false,
+				url: base + "sale_inte/wx/jssdkConfig.action",
+				success: function (result) {
+					alert(JSON.stringify(result));
+					appid = result.data.appId;
+					tp = result.data.timestamp;
+					noncestr = result.data.nonceStr;
+					sie = result.data.signature;
+				}
+			})
+			wx.config({
+				debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+				appId: appid, // 必填，公众号的唯一标识
+				timestamp: tp, // 必填，生成签名的时间戳
+				nonceStr: noncestr, // 必填，生成签名的随机串
+				signature: sie, // 必填，签名
+				jsApiList: ['updateTimelineShareData'] // 必填，需要使用的JS接口列表
+			});
+
+			wx.ready(function () {
+				wx.updateTimelineShareData({
+					title: '小訂小党', // 分享标题
+					link: '', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: '', // 分享图标
+					success: function () {
+
+						// 设置成功
+					}
+				});
+
+			}
+
+
+						$('.main_announcementCol2').click(function () {
+					alert("1");
+					getWeMeal();
+				})
+	</script>
+</body>
+
 </html>

@@ -448,3 +448,9 @@ body {
 #remake{
 	font-size: 16px;
 }
+#orgPri{
+	font-size: 16px;
+	text-decoration: line-through;
+	margin-left: 10px;
+	color: #000000;
+}

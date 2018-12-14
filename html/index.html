@@ -128,7 +128,7 @@
 			</div>
 		</aside>
 
-		<a class="diyIcon gwCat" href="shoppingTrolley.html">
+		<a class="diyIcon gwCat" onclick="jumpPage();">
 			<img id="catIcon" src="../img/index_shoppingCart.png" />
 		</a>
 		<div id="count">0</div>
@@ -218,7 +218,8 @@
 				url: base + "sale_inte/consumers/shopName.action",
 				ContentType: "application/json",
 				success: function(result) {
-					console.log(result);
+					alert(JSON.stringify(result));
+					localStorage.setItem("discountsType", JSON.stringify(result.data[0].discountsType));
 					localStorage.setItem("storesInformation", JSON.stringify(result));
 					if (result.data == '') {
 						var shopID = null;
@@ -510,6 +511,15 @@
 						success: function(resultActivity) {
 							console.log(resultActivity);
 							for (t in productCallback) {
+								var a = "flase";
+								for (var i = 0; i < resultActivity.data.length; i++) {
+									if (resultActivity.data[i].planType == 3 && productCallback[t].isBargain == 1) {
+										a = "ture";
+										break;
+									} else {
+										a = "false";
+									}
+								}
 								var a1 = '';
 								var activity1 = '';
 								var activity2 = '';
@@ -527,8 +537,15 @@
 										"'/>"
 									productListHtml += "<div class='list_sub_title'>" + productCallback[t].proName + "</div>"
 									productListHtml += "<div class='score-sale'>"
-									productListHtml += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + productCallback[
-										t].price + "</span>元</span>"
+									if (a == "ture") {
+										productListHtml += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + productCallback[
+											t].price + "</span>元</span>"
+										productListHtml += "<span style='margin-left:20px;text-decoration:line-through;'>原价:" + productCallback[
+											t].origionPrice + "元</span>"
+									} else {
+										productListHtml += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + productCallback[
+											t].origionPrice + "</span>元</span>"
+									}
 									productListHtml += "</div>"
 									productListHtml += "<div class='order-bgHide spms'>" + productCallback[t].remark + "</div>"
 									productListHtml += "</li>"

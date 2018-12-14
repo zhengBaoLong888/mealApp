@@ -255,45 +255,118 @@ input:disabled {
 	background: linear-gradient(to right, #ff7111, #e33b17);
 	border: #ff6e52 solid 1px;
 }
+
 .marksYdn {
-	position:fixed;
+	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	z-index: 99;
 	text-align: center;
-	background-color: rgba(255,255,255,0);
+	background-color: rgba(255, 255, 255, 0);
 	display: none;
 }
-.marksYdn span{
+
+.marksYdn span {
 	padding: 10px 30px 10px 60px;
 	position: absolute;
 	top: 47%;
 	left: 36%;
-	background-color: rgba(0,0,0,0.6);
-	border-radius:10px;
+	background-color: rgba(0, 0, 0, 0.6);
+	border-radius: 10px;
 	display: block;
 	color: #f5f5f5;
 	font-size: 28px;
 	background-image: url(../img/loading4.gif);
-    background-position: 9% 50%;
-    background-repeat: no-repeat;
-    background-size: 30px 30px;
-    line-height: initial;
+	background-position: 9% 50%;
+	background-repeat: no-repeat;
+	background-size: 30px 30px;
+	line-height: initial;
 }
-.layout-felx{
+
+.layout-felx {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 }
-.shopCat-img{
+
+.shopCat-img {
 	width: 40px;
 	height: 23px;
 	margin-left: 5px;
 }
-.couponDescription{
+
+.couponDescription {
 	position: absolute;
 	bottom: 65px;
 	left: 170px;
+}
+
+.selectPreferentialActivities {
+	padding: 8px 3%;
+	border-bottom: #ededed solid 1px;
+}
+
+.selectPreferentialActivities input {
+	width: 25px;
+	height: 25px;
+	-webkit-appearance: radio;
+	margin-right: 10px;
+}
+
+.selectPreferentialActivities label {
+	font-size: 24px;
+}
+
+.FavorableBlock {
+	margin-bottom: 10px;
+}
+
+.preferentialPirce {
+	color: #f90d0d;
+}
+
+#spaTitle {
+	padding: 5px 0 10px 0;
+	font-size: 22px;
+}
+
+.flex {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.no{
+	display: none;
+}
+.js-btn,.js-btn2{
+	display: none;
+}
+.js-btn2 span{
+	width:70%;
+	border-radius:20px;
+	font-size:26px;
+	padding: 8px 3%;
+	text-align: center;
+	margin: 20px auto;
+	height: auto;
+	color: #fff;
+	line-height: normal;
+	float: none;
+	display: block;
+	background-color: #e8af14;
+}
+.orgPri{
+	margin-top: 5px;
+	text-decoration: line-through;
+}
+.orgPri span{
+	font-size: 16px;
+}
+.setFlex{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 }

@@ -28,17 +28,57 @@
 					</div>
 					<div class="show">购物车还是空的哦~</div>
 					<div class="coupons">
-						<span>使用优惠券</span>
+						<span>选择优惠券</span>
 						<div class="numAva"><span id="available">0</span>张可用</div>
 						<img id="yhjImg" src="../img/comment_3.png" />
 					</div>
+
+					<div class="selectPreferentialActivities">
+						<p id="spaTitle">请选择以下活动：</p>
+						<form action="" method="post">
+							<div class="FavorableBlock no" id="p_mz">
+								<div class="setFlex">
+									<input data-val="3" name="Fruit" type="radio" value="mz" /><label>参加满赠后优惠的价格：<span class="preferentialPirce" id="another_mz">0</span></label>
+								</div>
+							</div>
+
+							<div class="FavorableBlock no" id="p_mj">
+								<div class="setFlex">
+									<input data-val="2" name="Fruit" type="radio" value="mj" /><label>参加满减后优惠的价格：<span class="preferentialPirce" id="another_mj">0</span></label>
+								</div>
+							</div>
+
+							<div class="FavorableBlock no" id="p_zk">
+								<div class="setFlex">
+									<input data-val="1" name="Fruit" type="radio" value="zk" /><label>参加折扣后优惠的价格：<span class="preferentialPirce" id="another_zk">0</span></label>
+								</div>
+							</div>
+							<div class="FavorableBlock no" id="p_tj">
+								<div class="setFlex">
+									<input data-val="4" name="Fruit" type="radio" value="tj" /><label>参加特价后优惠的价格：<span class="preferentialPirce" id="another_tj">0</span></label>
+								</div>
+							</div>
+							<div class="FavorableBlock">
+								<div class="setFlex">
+									<input id="coups" data-val="false" name="Fruit" type="radio" value="yhj" /><label>使用优惠券后优惠的价格：<span class="preferentialPirce" id="another_yhj">未选择优惠券</span></label>
+								</div>
+							</div>
+							<!--<div class="FavorableBlock" data-pers="">
+								<input data-val="0" name="Fruit" type="radio" value="refused" checked="checked"><label>不参加任何活动：<span class="preferentialPirce" id="another_refused">0</span></label>
+							</div>-->
+						</form>
+					</div>
+
 					<article class="js-btn">
 						<span>合计:</span>
 						<span id="combined" style="color:#f90d0d;padding: 0 40px 0 15px;">0</span>
 						<span class="settlement">去结算</span>
 					</article>
-				</div>
 
+					<article class="js-btn2">
+						<span class="settlement2">去结算</span>
+					</article>
+				</div>
 
 				<article class="marks">
 					<div class="panel">
@@ -48,13 +88,13 @@
 					</div>
 					<div class="row3">
 						<span id="cancel">取消</span>
-						<span id="confirm">确定</span>
+						<span id="confirm" onclick="getCoupons();">确定</span>
 					</div>
 				</article>
 			</div>
 		</div>
 		<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
-		<script type="text/javascript " src="../js/mui.min.js "></script>
+		<script type="text/javascript" src="../js/mui.min.js"></script>
 		<script type="text/javascript" src="../js/script.js"></script>
 		<script>
 			mui.init();
@@ -65,24 +105,12 @@
 			var Authorization = "Bearer " + token;
 			var base = localStorage.getItem("base");
 			var html = '';
-			var locaTotlePrice = 0;
-			var ultimatePrice = 0; //买赠
-			var tjultimatePrice = 0;
-			var naultimatePrice = 0; //不参加任何活动
-			var fdrUltimatePrice_zk = 0 //满减折扣
-			var fdrUltimatePrice_mj = 0 //满减折扣
-			var totlePric_zkMj = 0;
-			var zkUltimatePrice_zk = 0; //折扣
-			var mjUltimatePrice_mj = 0; //满减
-			var resultData;
 			var highestData = {};
-			var ultimatePrice = 0
 			var jishu = [];
 			var jsCount = 0;
-
 			//获取当前时间
 			var colData = getDate();
-
+			console.log(localityDataList);
 			function uuid() {
 				var s = [];
 				var hexDigits = "0123456789abcdef";
@@ -98,7 +126,6 @@
 			var ican = uuid();
 
 			$('.dianPuName').html(relatedobj.sn);
-			console.log(localityDataList);
 
 			//购物车列表 start
 			if(localityDataList.length == 0) {
@@ -108,7 +135,7 @@
 				for(var i = 0; i < localityDataList.length; i++) {
 					var dataProId = localityDataList[i].proId;
 					if(localityDataList[i].proType == 1) {
-						var itemPirce, totalPirce;
+						//						var itemPirce, totalPirce;
 						html += "<div class='shopCardetails_row2' data-proId = '" + localityDataList[i].proId + "' data-playType = '" + localityDataList[i].proType + "'>"
 						html += "<div class='shopCarCol-1'>"
 						html += "<div class='layout-felx'>"
@@ -147,21 +174,32 @@
 							html += "<input class='shop_addUp' type='hidden' value='" + localityDataList[i].mats[0].matShopPirce + "' />" //加价
 						}
 
-						for(hdItem in products) {
-							if(products[hdItem].proType == 1 && products[hdItem].proId == dataProId) {
-								html += "<input class='mz' type='hidden' value='" + products[hdItem].isPresented + "' />" //满赠
-								html += "<input class='tj' type='hidden' value='" + products[hdItem].isBargain + "' />" //特价
-								html += "<input class='zk' type='hidden' value='" + products[hdItem].isDiscount + "' />" //折扣
-								html += "<input class='mj' type='hidden' value='" + products[hdItem].isMoneyOff + "' />" //满减
-							}
-						}
 						for(item in products) {
-							if(products[item].proId == dataProId) {
-								itemPirce = Number(localityDataList[i].mats[0].matShopPirce) + Number(products[item].price); //单价
-								totalPirce = localityDataList[i].num * itemPirce; //总价
+							if(products[item].proType == 1 && products[item].proId == dataProId) {
+								html += "<input class='mz hd' type='hidden' value='" + products[item].isPresented + "' />" //满赠
+								html += "<input class='tj hd' type='hidden' value='" + products[item].isBargain + "' />" //特价
+								html += "<input class='zk hd' type='hidden' value='" + products[item].isDiscount + "' />" //折扣
+								html += "<input class='mj hd' type='hidden' value='" + products[item].isMoneyOff + "' />" //满减
+							}
+
+							if(products[item].proId == dataProId) { //商品与购物车商品比较
+								if(products[item].isBargain == 1) {
+									var itemPirce = Number(localityDataList[i].mats[0].matShopPirce) + Number(products[item].price); //销售价单价
+									var origionPrice = Number(localityDataList[i].mats[0].matShopPirce) + Number(products[item].origionPrice); //原价单价
+									html += "<div class='pirceA'>"
+									html += "<span class='shopPirce itemPirce' data-itemPirce='" + itemPirce.toFixed(2) + "'>" + itemPirce.toFixed(2) + "</span>"
+									html += "<p class='orgPri'>"
+									html += "<span>原价￥</span><span class='origionPrice' data-origionPrice='" + origionPrice.toFixed(2) + "'>" + origionPrice.toFixed(2) + "</span>"
+									html += "</p>"
+									html += "</div>"
+								} else {
+									var origionPrice = Number(localityDataList[i].mats[0].matShopPirce) + Number(products[item].origionPrice); //单价
+									//var	totalPirce = localityDataList[i].num * itemPirce; //总价
+									html += "<div class='pirceA'>￥<span class='shopPirce origionPrice' data-origionPrice='" + origionPrice.toFixed(2) + "'>" + origionPrice.toFixed(2) + "</span></div>"
+								}
 							}
 						}
-						html += "<div class='pirceA'>￥<span class='shopPirce' data-tolPirce='" + totalPirce.toFixed(2) + "'data-itemPirce='" + itemPirce.toFixed(2) + "'>" + itemPirce.toFixed(2) + "</span></div>"
+
 						html += "<div class='ShopSpinner'>"
 						html += "<button class='decrease'>-</button>"
 						html += "<input type='text' class='shopSpinnerInput' value='" + localityDataList[i].num + "' disabled='disabled'/>"
@@ -170,33 +208,67 @@
 						html += "</div>"
 						html += "</div>"
 					} else if(localityDataList[i].proType == 2) {
+						var addDefig = 0;
+						var matsGos = 0;
 						html += "<div class='shopCardetails_row2' data-proId = '" + localityDataList[i].proId + "' data-playType = '" + localityDataList[i].proType + "'>"
 						html += "<div class='shopCarCol-1'>"
+						html += "<div class='flex'>"
 						html += "<span class='goodsName' data-relName='" + localityDataList[i].goodsProName + "'>" + localityDataList[i].goodsProName + "</span>"
+						if(localityDataList[i].isDiscount == 1) {
+							html += "<img class='shopCat-img' src='../img/zhekou.png'/>"
+						}
+						if(localityDataList[i].isPresented == 1) {
+							html += "<img class='shopCat-img' src='../img/manzeng.png'/>"
+						}
+						if(localityDataList[i].isMoneyOff == 1) {
+							html += "<img class='shopCat-img' src='../img/manjian.png'/>"
+						}
+						if(localityDataList[i].isBargain == 1) {
+							html += "<img class='shopCat-img' src='../img/tejia.png'/>"
+						}
+						html += "</div>"
 						html += "<p class='goodsTasker'></p>"
 						for(a in localityDataList[i].dataTaoCanArray) {
 							html += "<span class='tasteGroup'>" + localityDataList[i].dataTaoCanArray[a].sexname + "</span>"
 							html += "    "
 						}
 						html += "</div>"
-						html += "<input class='shop_addUp' type='hidden' value='0' />" //加价
+						//						html += "<input class='shop_addUp' type='hidden' value='0' />" //加价
 						for(hdItem in products) {
 							if(products[hdItem].proType == 2 && products[hdItem].proId == dataProId) {
-//								html += "<input class='mz' type='hidden' value='" + products[hdItem].isPresented + "' />" //满赠
-//								html += "<input class='tj' type='hidden' value='" + products[hdItem].isBargain + "' />" //特价
-//								html += "<input class='zk' type='hidden' value='" + products[hdItem].isDiscount + "' />" //折扣
-//								html += "<input class='mj' type='hidden' value='" + products[hdItem].isMoneyOff + "' />" //满减
-																html += "<input class='mz' type='hidden' value='0' />" //满赠
-																html += "<input class='tj' type='hidden' value='0' />" //特价
-																html += "<input class='zk' type='hidden' value='0' />" //折扣
-																html += "<input class='mj' type='hidden' value='0' />" //满减
+
+								html += "<input class='mz hd' type='hidden' value='" + products[hdItem].isPresented + "' />" //满赠
+								html += "<input class='tj hd' type='hidden' value='" + products[hdItem].isBargain + "' />" //特价
+								html += "<input class='zk hd' type='hidden' value='" + products[hdItem].isDiscount + "' />" //折扣
+								html += "<input class='mj hd' type='hidden' value='" + products[hdItem].isMoneyOff + "' />" //满减
+
+										for(var q = 0; q < localityDataList[i].dataTaoCanArray.length; q++) {
+											addDefig += Number(localityDataList[i].dataTaoCanArray[q].addDefig);
+											matsGos += Number(localityDataList[i].dataTaoCanArray[q].mats[0].matShopPirce);
+										}
+								
+								var taocanTP = Number(addDefig) + Number(matsGos); //更换商品和加料总价
+								
+								if(products[hdItem].isBargain == 1) {
+									var itemPirce = Number(taocanTP) + Number(products[hdItem].price); //销售价单价
+									var origionPrice = Number(taocanTP) + Number(products[hdItem].origionPrice); //原价单价
+									html += "<div class='pirceA'>"
+									html += "<span class='shopPirce itemPirce' data-itemPirce='" + itemPirce.toFixed(2) + "'>" + itemPirce.toFixed(2) + "</span>"
+									html += "<p class='orgPri'>"
+									html += "<span>原价￥</span><span class='origionPrice' data-origionPrice='" + origionPrice.toFixed(2) + "'>" + origionPrice.toFixed(2) + "</span>"
+									html += "</p>"
+									html += "</div>"
+								} else {
+									var origionPrice = Number(taocanTP) + Number(products[hdItem].origionPrice); //单价
+									html += "<div class='pirceA'>￥<span class='shopPirce origionPrice' data-origionPrice='" + origionPrice.toFixed(2) + "'>" + origionPrice.toFixed(2) + "</span></div>"
+								}
 							}
+
 						}
 
-						html += "<div class='pirceA'>￥<span class='shopPirce' data-tolPirce='" + localityDataList[i].price + "'data-itemPirce='" + localityDataList[i].price + "'>" + localityDataList[i].price + "</span></div>"
 						html += "<div class='ShopSpinner'>"
 						html += "<button class='decrease'>-</button>"
-						html += "<input type='text' class='shopSpinnerInput' value='" + localityDataList[i].num + "' />"
+						html += "<input disabled='disabled' type='text' class='shopSpinnerInput' value='" + localityDataList[i].num + "' />"
 						html += "<button class='increase'>+</button>"
 						html += "</div>"
 						html += "</div>"
@@ -207,165 +279,180 @@
 				}
 			} //购物车列表 end
 
-			//计算单价
-			function unitPrice() {
-				locaTotlePrice = 0;
-				var unitPrice = JSON.parse(localStorage.getItem('dataList'));
-				$('.shopCardetails_row2').each(function(index) {
-					var index = index;
-					var unitItemPirce = $(this).find('.shopPirce').attr("data-itemPirce");
-					var unitNum = unitPrice[index].num;
-					locaTotlePrice = Number(unitItemPirce) * Number(unitNum);
-					$(this).find('.shopPirce').attr("data-tolPirce", locaTotlePrice.toFixed(2));
-					$(this).find('.shopPirce').html(locaTotlePrice.toFixed(2));
-				})
-			}
-			unitPrice();
-			//买赠
-			function buyGift() {
-				var uc = 0;
-				var fe = 0;
-				var ner = 0;
-				var tolPri = 0;
-				var minusPrice = 0;
-				var temp = 9999;
-				ultimatePrice = 0;
-				var activityArray = [];
-				$.ajax({
-					type: "post",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-						"Authorization": Authorization
-					},
-					data: {
-						"shopID": relatedobj.sh,
-						"enterpriseID": relatedobj.en,
-						"pinpaiID": relatedobj.pi
-					},
-					url: base + "sale_inte/salespromotion/getpromotion.action",
-					async: false,
-					success: function(result) {
-						resultData = result.data;
-						$('.shopCardetails_row2').each(function() {
-							var mzVal = $(this).find('.mz').val();
-							if(mzVal == 1) {
-								var gdId = $(this).attr("data-proId");
-								var tpr = $(this).find('.shopPirce').attr("data-itemPirce");
-								var gdname = $(this).find('.goodsName').attr("data-relName");
-								var spinner = $(this).find('.shopSpinnerInput').val();
-								var productObj = {
-									ogdId: gdId,
-									otpr: tpr,
-									ogdname: gdname,
-									nums: spinner
-								}
-								activityArray.push(productObj);
-							}
-						});
-						if(result.data.length == 0) {
-							for(var i = 0; i < activityArray.length; i++) {
-								ultimatePrice += activityArray[i].nums * activityArray[i].otpr;
-							}
+			function couponPrice(_jsCount) { //优惠券类型
+				if(_jsCount == 1) {
+					if($('.actionTF').attr("data-coutype") == 1) {
+						var couType = $('.actionTF').attr("data-discount");
+						var totalPricejf = $('#combined').text();
+						var jhjg = Number(totalPricejf) - Number(couType);
+						if(jhjg < 0) {
+							$('#combined').html(0.00);
 						} else {
-							for(var i = 0; i < activityArray.length; i++) {
-								ner += Number(activityArray[i].nums); //总数量
-								tolPri += Number(activityArray[i].otpr) * Number(activityArray[i].nums); //总价
-							};
-							for(l in result.data) {
-								if(result.data[l].planType == 4) {
-									var x = result.data[l].upToCount;
-									var y = result.data[l].freeCount;
-									var v = ner - x - y;
-									if(v < 0) {
-										v = 0;
-									} else {}
-									var z = x + v;
-
-									if(z < temp) {
-										temp = z;
-										uc = result.data[l].upToCount;
-										fe = result.data[l].freeCount;
-									}
-								}
-							};
-							var compare = function(obj1, obj2) {
-								var val1 = obj1.otpr;
-								var val2 = obj2.otpr;
-								if(val1 < val2) {
-									return 1;
-								} else if(val1 > val2) {
-									return -1;
-								} else {
-									return 0;
-								}
-							}
-							activityArray.sort(compare);
-							var replaceTemp = ner - temp; //赠送杯数 
-							var totNum = uc + fe;
-							if(ner < totNum) {
-								ultimatePrice = tolPri;
-							} else {
-								for(var j = 0; j < activityArray.length; j++) {
-									if(activityArray[j].nums >= replaceTemp) {
-										tolPri = tolPri - Number(activityArray[j].otpr) * replaceTemp;
-										break;
-									} else {
-										tolPri = tolPri - activityArray[j].nums * activityArray[j].otpr;
-										replaceTemp = replaceTemp - activityArray[j].nums;
-									}
-								}
-								ultimatePrice = tolPri;
-							}
+							$('#combined').html(jhjg.toFixed(2));
 						}
+					} else if($('.actionTF').attr("data-coutype") == 2) {
+						var ntert = [];
+						$('.shopCardetails_row2').each(function() {
+							if($(this).attr("data-playtype") == 1) {
+								ntert.push($(this).find('.shopPirce').attr("data-itempirce"));
+							}
+						})
+						var maxVal = Math.max.apply(null, ntert);
+						var ComplimentaryFinalValue = Number($('#combined').text()) - Number(maxVal);
+						$('#combined').html(ComplimentaryFinalValue.toFixed(2));
 					}
-				})
-			};
-			buyGift();
-
-			//特价
-			function specialOffer() {
-				var tjArray = [];
-				var tjner = 0;
-				$('.shopCardetails_row2').each(function() {
-					var tjVal = $(this).find('.tj').val();
-					if(tjVal == 1) {
-						var tjgdId = $(this).attr("data-proId");
-						var tjtpr = $(this).find('.shopPirce').attr("data-itemPirce");
-						var tjgdname = $(this).find('.goodsName').attr("data-relName");
-						var tjspinner = $(this).find('.shopSpinnerInput').val();
-						var tjproductObj = {
-							ogdId: tjgdId,
-							otpr: tjtpr,
-							ogdname: tjgdname,
-							nums: tjspinner
-						}
-						tjArray.push(tjproductObj);
-					}
-				});
-				for(var i = 0; i < tjArray.length; i++) {
-					if(tjArray.length == 0) {
-						tjner = 0;
-					} else {
-						tjner += Number(tjArray[i].otpr) * Number(tjArray[i].nums);
-					}
-
 				}
-				tjultimatePrice = tjner;
 			}
-			specialOffer();
 
-			//不参加任何活动
-			function noActivity() {
-				var naArray = [];
-				var naner = 0;
-				$('.shopCardetails_row2').each(function() {
-					var tjVal = $(this).find('.tj').val();
-					var mzVal = $(this).find('.mz').val();
-					var zkVal = $(this).find('.zk').val();
-					var mjVal = $(this).find('.mj').val();
-					if(tjVal != 1 && mzVal != 1 && zkVal != 1 && mjVal != 1) {
+				$('.js-btn2').show();
+				var resultData;
+
+				function getpromotion() {
+					$.ajax({
+						type: "post",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded",
+							"Authorization": Authorization
+						},
+						data: {
+							"shopID": relatedobj.sh,
+							"enterpriseID": relatedobj.en,
+							"pinpaiID": relatedobj.pi
+						},
+						url: base + "sale_inte/salespromotion/getpromotion.action",
+						async: false,
+						success: function(result) {
+							console.log(result);
+							resultData = result.data;
+						}
+					});
+				}
+				getpromotion();
+
+				//满赠
+				function buyGift() {
+					var uc = 0;
+					var fe = 0;
+					var ner = 0;
+					var tolPri = 0;
+					var minusPrice = 0;
+					var temp = 9999;
+					var ultimatePrice = 0;
+					var activityArray = [];
+					$('.shopCardetails_row2').each(function() {
+						var mzVal = $(this).find('.mz').val();
+						if(mzVal == 1) {
+							var gdId = $(this).attr("data-proId");
+							var tpr = $(this).find('.origionPrice').attr("data-origionPrice");
+							var gdname = $(this).find('.goodsName').attr("data-relName");
+							var spinner = $(this).find('.shopSpinnerInput').val();
+							var productObj = {
+								ogdId: gdId,
+								otpr: tpr,
+								ogdname: gdname,
+								nums: spinner
+							}
+							activityArray.push(productObj);
+							
+						}
+					});
+					if(resultData.length == 0) {
+						for(var i = 0; i < activityArray.length; i++) {
+							ultimatePrice += activityArray[i].nums * activityArray[i].otpr;
+						}
+					} else {
+						for(var i = 0; i < activityArray.length; i++) {
+							ner += Number(activityArray[i].nums); //总数量
+							tolPri += Number(activityArray[i].otpr) * Number(activityArray[i].nums); //总价
+						};
+						for(l in resultData) {
+							if(resultData[l].planType == 4) {
+								var x = resultData[l].upToCount;
+								var y = resultData[l].freeCount;
+								var v = ner - x - y;
+								if(v < 0) {
+									v = 0;
+								} else {}
+								var z = x + v;
+
+								if(z < temp) {
+									temp = z;
+									uc = resultData[l].upToCount;
+									fe = resultData[l].freeCount;
+								}
+							}
+						};
+						var compare = function(obj1, obj2) {
+							var val1 = obj1.otpr;
+							var val2 = obj2.otpr;
+							if(val1 < val2) {
+								return -1;
+							} else if(val1 > val2) {
+								return 1;
+							} else {
+								return 0;
+							}
+						}
+						activityArray.sort(compare);
+						var replaceTemp = ner - temp; //赠送杯数 
+						var totNum = uc + fe;
+						if(ner < totNum) {
+							ultimatePrice = tolPri;
+						} else {
+							for(var j = 0; j < activityArray.length; j++) {
+								if(activityArray[j].nums >= replaceTemp) {
+									tolPri = tolPri - Number(activityArray[j].otpr) * replaceTemp;//减去价格最小的商品价格
+									break;
+								} else {
+									tolPri = tolPri - activityArray[j].nums * activityArray[j].otpr;
+									replaceTemp = replaceTemp - activityArray[j].nums;
+								}
+							}
+							ultimatePrice = tolPri;
+						}
+					}
+					return ultimatePrice;
+				};
+
+				//特价
+				function specialOffer() {
+					var tjArray = [];
+					var tjner = 0;
+					$('.shopCardetails_row2').each(function() {
+						var tjVal = $(this).find('.tj').val();
+						if(tjVal == 1) {
+							var tjgdId = $(this).attr("data-proId");
+							var tjtpr = $(this).find('.itemPirce').attr("data-itemPirce");
+							var tjgdname = $(this).find('.goodsName').attr("data-relName");
+							var tjspinner = $(this).find('.shopSpinnerInput').val();
+							var tjproductObj = {
+								ogdId: tjgdId,
+								otpr: tjtpr,
+								ogdname: tjgdname,
+								nums: tjspinner
+							}
+							tjArray.push(tjproductObj);
+						}
+					});
+					for(var i = 0; i < tjArray.length; i++) {
+						if(tjArray.length == 0) {
+							tjner = 0;
+						} else {
+							tjner += Number(tjArray[i].otpr) * Number(tjArray[i].nums);
+						}
+					}
+					return tjner;
+				}
+
+
+				//不参加任何活动
+				function noActivity() {
+					var naArray = [];
+					var naner = 0;
+					var naultimatePrice = 0;
+					$('.shopCardetails_row2').each(function() {
 						var nagdId = $(this).attr("data-proId");
-						var natpr = $(this).find('.shopPirce').attr("data-itemPirce");
+						var natpr = $(this).find('.origionPrice').attr("data-origionPrice");
 						var nagdname = $(this).find('.goodsName').attr("data-relName");
 						var naspinner = $(this).find('.shopSpinnerInput').val();
 						var naproductObj = {
@@ -375,228 +462,300 @@
 							nums: naspinner
 						}
 						naArray.push(naproductObj);
-						console.log(naArray);
-					}
-				});
-				for(var i = 0; i < naArray.length; i++) {
-					if(naArray.length == 0) {
-						naner = 0;
-					} else {
-						naner += Number(naArray[i].otpr) * Number(naArray[i].nums);
-					}
-
-				}
-				naultimatePrice = naner;
-			}
-			noActivity();
-
-			//满减and折扣
-			function fullDiscountReduction() {
-				var fdrArray = [];
-				var fdrNer = 0;
-				var fdrTemp = 0;
-				var mj_upToPrice = 0;
-				var mj_offPrice = 0;
-				$('.shopCardetails_row2').each(function() {
-					var zkVal = $(this).find('.zk').val();
-					var mjVal = $(this).find('.mj').val();
-					if(zkVal == 1 && mjVal == 1) {
-						var fdrgdId = $(this).attr("data-proId");
-						var fdrtpr = $(this).find('.shopPirce').attr("data-itemPirce");
-						var fdrgdname = $(this).find('.goodsName').attr("data-relName");
-						var fdrspinner = $(this).find('.shopSpinnerInput').val();
-						var fdrproductObj = {
-							ogdId: fdrgdId,
-							otpr: fdrtpr,
-							ogdname: fdrgdname,
-							nums: fdrspinner
-						}
-						fdrArray.push(fdrproductObj);
-					}
-				});
-				for(h in resultData) {
-					if(resultData[h].planType == 1) {
-						fdrTemp = resultData[h].ratio;
-					} else if(resultData[h].planType == 2) {
-						mj_upToPrice = resultData[h].upToPrice;
-						mj_offPrice = resultData[h].offPrice;
-					}
-				}
-				for(var i = 0; i < fdrArray.length; i++) {
-					if(fdrArray.length == 0) {
-						fdrNer = 0;
-					} else {
-						fdrNer += Number(fdrArray[i].otpr) * Number(fdrArray[i].nums); //总价
-						fdrUltimatePrice_zk = fdrNer * (fdrTemp / 100);
-						if(fdrNer >= mj_upToPrice) {
-							fdrUltimatePrice_mj = fdrNer - mj_offPrice;
+					});
+					for(var i = 0; i < naArray.length; i++) {
+						if(naArray.length == 0) {
+							naner = 0;
 						} else {
-							fdrUltimatePrice_mj = fdrNer;
+							naner += Number(naArray[i].otpr) * Number(naArray[i].nums);
 						}
 					}
+					return naner.toFixed(2);
 				}
-				if(fdrUltimatePrice_zk > fdrUltimatePrice_mj) {
-					totlePric_zkMj = fdrUltimatePrice_mj;
-				} else {
-					totlePric_zkMj = fdrUltimatePrice_zk;
-				}
-			}
-			fullDiscountReduction();
-
-			//折扣
-			function discount() {
-				var zkArray = [];
-				var zkNer = 0;
-				var zkTemp = 0;
-				$('.shopCardetails_row2').each(function() {
-					var zkVal = $(this).find('.zk').val();
-					var mjVal = $(this).find('.mj').val();
-					if(zkVal == 1 && mjVal == 0) {
-						var zkgdId = $(this).attr("data-proId");
-						var zktpr = $(this).find('.shopPirce').attr("data-itemPirce");
-						var zkgdname = $(this).find('.goodsName').attr("data-relName");
-						var zkspinner = $(this).find('.shopSpinnerInput').val();
-						var zkproductObj = {
-							ogdId: zkgdId,
-							otpr: zktpr,
-							ogdname: zkgdname,
-							nums: zkspinner
+				//折扣
+				function discount() {
+					var zkArray = [];
+					var zkNer = 0;
+					var zkTemp = 0;
+					var zkUltimatePrice_zk = 0;
+					$('.shopCardetails_row2').each(function() {
+						var zkVal = $(this).find('.zk').val();
+						var mjVal = $(this).find('.mj').val();
+						if(zkVal == 1) {
+							var zkgdId = $(this).attr("data-proId");
+							var zktpr = $(this).find('.origionPrice').attr("data-origionprice");
+							var zkgdname = $(this).find('.goodsName').attr("data-relName");
+							var zkspinner = $(this).find('.shopSpinnerInput').val();
+							var zkproductObj = {
+								ogdId: zkgdId,
+								otpr: zktpr,
+								ogdname: zkgdname,
+								nums: zkspinner
+							}
+							zkArray.push(zkproductObj);
 						}
-						zkArray.push(zkproductObj);
-					}
-				});
-				for(zk in resultData) {
-					if(resultData[zk].planType == 1) {
-						zkTemp = resultData[zk].ratio;
-						mj_upToPrice = resultData[h].upToPrice;
-						mj_offPrice = resultData[h].offPrice;
-					}
-				}
-				for(var i = 0; i < zkArray.length; i++) {
-					if(zkArray.length == 0) {
-						zkNer = 0;
-					} else {
-						zkNer += Number(zkArray[i].otpr) * Number(zkArray[i].nums); //总价
-						zkUltimatePrice_zk = zkNer * (zkTemp / 100);
-					}
-				}
-			}
-			discount();
-
-			//满减
-			function fullReduction() {
-				var mjArray = [];
-				var mjNer = 0;
-				var mjTemp = 0;
-				var mj2_upToPrice = 0;
-				var mj2_offPrice = 0;
-				$('.shopCardetails_row2').each(function() {
-					var zkVal = $(this).find('.zk').val();
-					var mjVal = $(this).find('.mj').val();
-					if(zkVal == 0 && mjVal == 1) {
-						var mjgdId = $(this).attr("data-proId");
-						var mjtpr = $(this).find('.shopPirce').attr("data-itemPirce");
-						var mjgdname = $(this).find('.goodsName').attr("data-relName");
-						var mjspinner = $(this).find('.shopSpinnerInput').val();
-						var mjproductObj = {
-							ogdId: mjgdId,
-							otpr: mjtpr,
-							ogdname: mjgdname,
-							nums: mjspinner
+					});
+					for(zk in resultData) {
+						if(resultData[zk].planType == 1) {
+							zkTemp = resultData[zk].ratio;
 						}
-						mjArray.push(mjproductObj);
 					}
-				});
-				for(mj in resultData) {
-					if(resultData[mj].planType == 2) {
-						mjTemp = resultData[mj].ratio;
-						mj2_upToPrice = resultData[mj].upToPrice;
-						mj2_offPrice = resultData[mj].offPrice;
-					}
-				}
-				for(var i = 0; i < mjArray.length; i++) {
-					if(mjArray.length == 0) {
-						mjNer = 0;
-					} else {
-						mjNer += Number(mjArray[i].otpr) * Number(mjArray[i].nums); //总价
-						if(mjNer >= mj2_upToPrice) {
-							mjUltimatePrice_mj = mjNer - mj2_offPrice;
+					for(var i = 0; i < zkArray.length; i++) {
+						if(zkArray.length == 0) {
+							zkNer = 0;
 						} else {
-							mjUltimatePrice_mj = mjNer;
+							zkNer += Number(zkArray[i].otpr) * Number(zkArray[i].nums); //总价
+							zkUltimatePrice_zk = zkNer * (zkTemp / 100);
 						}
 					}
+					return zkUltimatePrice_zk;
 				}
-			}
-			fullReduction();
-
-			//计算总价格
-			function getTotalPrice() {
-				var tCount = naultimatePrice + ultimatePrice + tjultimatePrice + totlePric_zkMj + zkUltimatePrice_zk + mjUltimatePrice_mj;
-				$('#combined').html(tCount.toFixed(2));
-			};
-			getTotalPrice();
-
-			//增减单品数量
-			$('.increase,.decrease').on('click', function() {
-				countIndex = $(this).parents('.shopCardetails_row2').index(); //商品下标
-				countNum = $(this).siblings('.shopSpinnerInput').val(); //数量
-				if($(this).attr("class") == 'increase') { //加
-					countNum++;
-					localityDataList[countIndex].num = countNum;
-				} else if($(this).attr("class") == 'decrease') { //减
-					countNum--;
-					if(countNum == 0) {
-						localityDataList.splice(countIndex, 1);
-						$('.shopCardetails_row2').eq(countIndex).remove();
-						if(localityDataList.length == 0) {
-							$('.show').show();
-							location.reload();
+				//满减
+				function fullReduction() {
+					var mjArray = [];
+					var mjNer = 0;
+					var mjTemp = 0;
+					var mj2_upToPrice = 0;
+					var mj2_offPrice = 0;
+					var mjUltimatePrice_mj = 0;
+					$('.shopCardetails_row2').each(function() {
+						var zkVal = $(this).find('.zk').val();
+						var mjVal = $(this).find('.mj').val();
+						if(mjVal == 1) {
+							var mjgdId = $(this).attr("data-proId");
+							var mjtpr = $(this).find('.origionPrice').attr("data-origionprice");
+							var mjgdname = $(this).find('.goodsName').attr("data-relName");
+							var mjspinner = $(this).find('.shopSpinnerInput').val();
+							var mjproductObj = {
+								ogdId: mjgdId,
+								otpr: mjtpr,
+								ogdname: mjgdname,
+								nums: mjspinner
+							}
+							mjArray.push(mjproductObj);
 						}
-					} else {
-						localityDataList[countIndex].num = countNum;
+					});
+					for(mj in resultData) {
+						if(resultData[mj].planType == 2) {
+							mjTemp = resultData[mj].ratio;
+							mj2_upToPrice = resultData[mj].upToPrice;
+							mj2_offPrice = resultData[mj].offPrice;
+						}
 					}
+					for(var i = 0; i < mjArray.length; i++) {
+						if(mjArray.length == 0) {
+							mjNer = 0;
+						} else {
+							mjNer += Number(mjArray[i].otpr) * Number(mjArray[i].nums); //总价
+							if(mjNer >= mj2_upToPrice) {
+								mjUltimatePrice_mj = mjNer - mj2_offPrice;
+							} else {
+								mjUltimatePrice_mj = mjNer;
+							}
+						}
+					}
+					return mjUltimatePrice_mj;
 				}
-				localStorage.setItem("dataList", JSON.stringify(localityDataList));
-				$(this).siblings('.shopSpinnerInput').val(countNum);
-				var a = JSON.parse(localStorage.getItem("dataList"));
-				console.log();
-				unitPrice(); //计算单价
-				buyGift(); //买赠
-				specialOffer(); //特价
-				noActivity(); //不参加任何活动
-				fullDiscountReduction(); //满减和折扣
-				discount(); //折扣
-				fullReduction(); //满减
-				getTotalPrice(); //总价
-				$('.panel_ul li').each(function() {
-					if($(this).hasClass("actionTF")) {
-						jsCount = 1;
-						return false;
-					}
+
+				$('.FavorableBlock').click(function() {
+					var choiceActivity = $(this).find("input").attr("data-val");
+					if(choiceActivity == "false") {
+						mui.toast('请选择优惠券');
+					} else {}
+					$('.FavorableBlock').find("input").removeAttr("checked");
+					$(this).find("input").attr("checked", "checked");
 				})
-				couponPrice(jsCount);
-			});
 
-			function emptyClear() {
-				$('#combined').html('0.00');
-				//$('.show').show();
-			}
+				//判断是否参加活动
+				function getPirce() {
+					var totalQuantity = 0;
+					$(".no").hide();
+					$('.shopCardetails_row2').each(function() {
+						//满赠
+						if($(this).find(".mz").val() == 1) {
+							var mzOtherPrice = 0;
+							var num = $(this).find(".shopSpinnerInput").val();
+							totalQuantity += Number(num);
+							for(var j = 0; j < resultData.length; j++) {
+								if(resultData[j].planType == 4) {
+									var upToCount = resultData[j].upToCount + 1;
+								}
+							}
+							if(totalQuantity >= upToCount) {
+								var mz = buyGift();
+								console.log(mz);
+								$('.shopCardetails_row2').each(function() {
+									if($(this).find(".mz").val() == 0) {
+										var mzItemPric = $(this).find(".origionPrice").attr("data-origionprice");
+										var mzNum = $(this).find(".shopSpinnerInput").val();
+										var mzTotalPrice = Number(mzItemPric) * Number(mzNum);
+										mzOtherPrice += mzTotalPrice;
+									}
+								})
+								var showPrice = mzOtherPrice + mz;
+								$('#another_mz').html(showPrice.toFixed(2));
+								$('#p_mz').show();
+							} else {
+							}
+						} else {
+						}
 
-			//清空购物车
-			$('.clear').click(function() {
-				var empty = JSON.parse(localStorage.getItem("dataList"));
-				if(empty.length == 0) {
-					// alert("购物车已经是空");
-					mui.toast('购物车已经是空');
-				} else {
-					empty = [];
-					localStorage.setItem("dataList", JSON.stringify(empty));
-					var empty2 = JSON.parse(localStorage.getItem("dataList"));
-					$('.shopCardetails_row2').remove();
-					emptyClear();
-					location.reload();
+						//特价
+						if($(this).find(".tj").val() == 1) {
+							var tjOtherPrice = 0;
+							var tj = specialOffer();
+							$('.shopCardetails_row2').each(function() {
+								if($(this).find(".tj").val() == 0) {
+									var tjItemPric = $(this).find(".origionPrice").attr("data-origionprice");
+									var tjNum = $(this).find(".shopSpinnerInput").val();
+									tjOtherPrice += Number(tjItemPric) * Number(tjNum);
+								}
+							})
+							var showPrice = tjOtherPrice + tj;
+							$('#another_tj').html(showPrice.toFixed(2));
+							$('#p_tj').show();
+						}
+
+						//满减
+						if($(this).find(".mj").val() == 1) {
+							var mjUpToPrice = 0;
+							var mjOtherPrice = 0;
+							for(var i = 0; i < resultData.length; i++) {
+								if(resultData[i].planType == 2) {
+									mjUpToPrice = resultData[i].upToPrice;
+									break;
+								}
+							}
+
+							$('.shopCardetails_row2').each(function() {
+								if($(this).find(".mj").val() == 0) {
+									var mjItemPric = $(this).find(".origionPrice").attr("data-origionprice");
+									var mjNum = $(this).find(".shopSpinnerInput").val();
+									var mjTotalPrice = Number(mjItemPric) * Number(mjNum);
+									mjOtherPrice += mjTotalPrice;
+								}
+							})
+
+							var mj = fullReduction();
+							if(mj >= mjUpToPrice) {
+								var showPric = mj + mjOtherPrice;
+								$('#another_mj').html(showPric.toFixed(2));
+								$('#p_mj').show();
+							} else {
+								$('#p_mj').hide();
+							}
+						} else {
+
+						}
+
+						//折扣
+						if($(this).find(".zk").val() == 1) {
+							var zkOtherPrice = 0;
+							var zk = discount();
+							$('.shopCardetails_row2').each(function() {
+								if($(this).find(".zk").val() == 0) {
+									var zkItemPric = $(this).find(".origionPrice").attr("data-origionprice");
+									var zkNum = $(this).find(".shopSpinnerInput").val();
+									var zkTotalPrice = Number(zkItemPric) * Number(zkNum);
+									zkOtherPrice += zkTotalPrice;
+								}
+							})
+							var showPrice = zk + zkOtherPrice
+							$('#another_zk').html(showPrice.toFixed(2));
+							$('#p_zk').show();
+						} else {
+
+						}
+					})
 				}
-			});
+				getPirce();
+
+				function getCoupons() {
+					var cou_id, cou_type;
+					var gift = 0;
+					var arr = [];
+					$('.panel_ul li').each(function() {
+						if($(this).hasClass("actionTF")) {
+							cou_id = $(this).attr("data-id");
+							cou_type = $(this).attr("data-coutype");
+							var noActivitydjq = noActivity();
+							if(cou_type == 2) { //赠劵
+								$('#coups').attr("data-val", "6");
+								$('.origionPrice').each(function() {
+									var itemPirc = $(this).attr("data-origionprice");
+									arr.push(itemPirc);
+								})
+								var minVal = Math.min.apply(null, arr);
+								gift = noActivitydjq - minVal;
+
+							} else if(cou_type == 1) { //代金券
+								$('#coups').attr("data-val", "5");
+								if($(this).hasClass("actionTF")) {
+									var discount = $(this).attr("data-discount");
+									gift = noActivitydjq - discount;
+								}
+							}
+							$("#another_yhj").html(gift.toFixed(2));
+							$('#yhjImg').attr("src", "../img/comment_5.png");
+							return false;
+						} else {
+
+						}
+					})
+					$('.marks').fadeOut();
+					$('.panel_ul li').animate({
+						top: "-100px"
+					})
+				}
+
+				//增减单品数量
+				$('.increase,.decrease').on('click', function() {
+					countIndex = $(this).parents('.shopCardetails_row2').index(); //商品下标
+					countNum = $(this).siblings('.shopSpinnerInput').val(); //数量
+					if($(this).attr("class") == 'increase') { //加
+						countNum++;
+						localityDataList[countIndex].num = countNum;
+					} else if($(this).attr("class") == 'decrease') { //减
+						countNum--;
+						if(countNum == 0) {
+							localityDataList.splice(countIndex, 1);
+							$('.shopCardetails_row2').eq(countIndex).remove();
+							if(localityDataList.length == 0) {
+								$('.show').show();
+								location.reload();
+							}
+						} else {
+							localityDataList[countIndex].num = countNum;
+						}
+					}
+					localStorage.setItem("dataList", JSON.stringify(localityDataList));
+					$(this).siblings('.shopSpinnerInput').val(countNum);
+					var a = JSON.parse(localStorage.getItem("dataList"));
+					getPirce();
+					getCoupons();
+					$('.panel_ul li').each(function() {
+						if($(this).hasClass("actionTF")) {
+							jsCount = 1;
+							return false;
+						}
+					})
+					//					couponPrice(jsCount);
+				});
+
+			$('.coupons').click(function() {
+				$('.marks').fadeIn();
+				$('.panel_ul li').animate({
+					top: "30px"
+				})
+			})
+
+			$('#cancel').click(function() {
+				$('.marks').fadeOut();
+				$('#yhjImg').attr("src", "../img/comment_3.png");
+				$('.panel_ul li').animate({
+					top: "-100px"
+				})
+			})
 
 			function voucher() {
 				var htmlVoucher = '';
@@ -622,7 +781,7 @@
 								htmlVoucher += "<img class='selectCoupons' src='../img/comment_3.png' />"
 								htmlVoucher += "<p class='p1'>小玎小珰</p>"
 								htmlVoucher += "<p class='p2'>" + result.data[i].couName + "</p>"
-								if(result.data[i].couType == 2){
+								if(result.data[i].couType == 2) {
 									htmlVoucher += "<span class='couponDescription'>此优惠券不适用于套餐</span>"
 								}
 								htmlVoucher += "<p class='p3'>有效期:<span>" + result.data[i].startDate.substring(10, -1) + "至" + result.data[i].endDate.substring(10, -1) + "</span></p>"
@@ -652,7 +811,7 @@
 						$('.panel_ul li').click(function() {
 							var arrgs = JSON.parse(localStorage.getItem("dataList"));
 							if(arrgs.length == 0) {
-								// alert("请选择商品后再选择优惠券");
+								//								alert("请选择商品后再选择优惠券");
 								mui.toast('请选择商品后再选择优惠券');
 							} else {
 								var dataRel = $(this).attr("data-rel");
@@ -669,68 +828,34 @@
 			}
 			voucher();
 
-			function win() {
-				$('.panel_ul li').animate({
-					top: "30px"
+			function setTotil() {
+				$('.FavorableBlock input').each(function() {
+					if($(this)[0].hasAttribute("checked")) {
+						var pp = $(this).parents(".FavorableBlock").find(".preferentialPirce").text();
+						$('#combined').html(pp);
+					} else {}
 				})
 			}
+			setTotil();
 
-			$('.coupons').click(function() {
-				$('#yhjImg').attr("src", "../img/comment_5.png");
-				$('.marks').fadeIn();
-				win();
-			})
-
-			$('#cancel').click(function() {
-				$('.marks').fadeOut();
-				$('#yhjImg').attr("src", "../img/comment_3.png");
-				$('.panel_ul li').find('.selectCoupons').attr("src", "../img/../img/comment_3.png");
-				$('.panel_ul li').removeClass("actionTF");
-				$('.panel_ul li').animate({
-					top: "-100px"
-				})
-			})
-
-			function couponPrice(_jsCount) {
-				if(_jsCount == 1) {
-					if($('.actionTF').attr("data-coutype") == 1) {
-						var couType = $('.actionTF').attr("data-discount");
-						var totalPricejf = $('#combined').text();
-						var jhjg = Number(totalPricejf) - Number(couType);
-						if(jhjg < 0) {
-							$('#combined').html(0.00);
-						} else {
-							$('#combined').html(jhjg.toFixed(2));
-						}
-					} else if($('.actionTF').attr("data-coutype") == 2) {
-						var ntert = [];
-						$('.shopCardetails_row2').each(function() {
-							if($(this).attr("data-playtype") == 1) {
-								ntert.push($(this).find('.shopPirce').attr("data-itempirce"));
-							}
-						})
-						var maxVal = Math.max.apply(null, ntert);
-						var ComplimentaryFinalValue = Number($('#combined').text()) - Number(maxVal);
-						$('#combined').html(ComplimentaryFinalValue.toFixed(2));
-					}
+			//清空购物车
+			$('.clear').click(function() {
+				var empty = JSON.parse(localStorage.getItem("dataList"));
+				if(empty.length == 0) {
+					//					alert("购物车已经是空");
+					mui.toast('购物车已经是空');
+				} else {
+					empty = [];
+					localStorage.setItem("dataList", JSON.stringify(empty));
+					var empty2 = JSON.parse(localStorage.getItem("dataList"));
+					$('.shopCardetails_row2').remove();
+					$('#combined').html('0.00');
+					location.reload();
 				}
-			}
-
-			$('#confirm').click(function() {
-				$('.panel_ul li').each(function() {
-					if($(this).hasClass("actionTF")) {
-						jsCount = 1;
-						return false;
-					}
-				})
-				$('.marks').fadeOut();
-				$('.panel_ul li').animate({
-					top: "-100px"
-				})
-				couponPrice(jsCount);
 			});
+
 			//订单
-			function dd(_arrText) {
+			function dd() {
 				$.ajax({
 					type: "post",
 					headers: {
@@ -742,19 +867,20 @@
 						"data": JSON.stringify(highestData)
 					},
 					ContentType: "application/json",
-						beforeSend: function() {
-							$('.marksYdn').show();
-						},
+					beforeSend: function() {
+						$('.marksYdn').show();
+					},
 					success: function(resultAsx) {
 						console.log(resultAsx);
 						if(resultAsx.data.totalPrice == '0.00') {
-							// alert("下单成功");
+							//							alert("下单成功");
 							mui.toast('下单成功');
 							var emptyArr = [];
-							localStorage.setItem("dataList",JSON.stringify(emptyArr));
+							localStorage.setItem("dataList", JSON.stringify(emptyArr));
 							location.reload();
 						} else {
 							var orderId = resultAsx.data.orderNo;
+
 							function genQueryData() {
 								var result;
 								$.ajax({
@@ -776,11 +902,12 @@
 								});
 								return result;
 							}
+
 							function onBridgeReady() {
 								WeixinJSBridge.invoke('getBrandWCPayRequest', genQueryData(), function(res) {
 									if(res.err_msg == "get_brand_wcpay_request:ok") {
 										var emptyArr = [];
-										localStorage.setItem("dataList",JSON.stringify(emptyArr));
+										localStorage.setItem("dataList", JSON.stringify(emptyArr));
 										location.reload();
 									}
 								});
@@ -800,7 +927,7 @@
 							}
 							init();
 						}
-						
+
 					},
 					complete: function() {
 						ican = uuid();
@@ -809,7 +936,7 @@
 				});
 			}
 
-			function orderDataDtructure(_ice) {
+			function orderDataDtructure(_ice, _discountsActivity) {
 				var dataxAx = {};
 				var data = [];
 				var getStructure = JSON.parse(localStorage.getItem("dataList"));
@@ -901,7 +1028,7 @@
 							}
 							dataxAx = {
 								proId: getStructure[i].dataTaoCanArray[q].proId,
-								combID: getStructure[i].dataTaoCanArray[q].combID,
+								combID: getStructure[i].dataTaoCanArray[q].id,
 								makes,
 								mats,
 								tastes
@@ -922,43 +1049,75 @@
 					orderID: ican,
 					createTime: colData,
 					shopID: relatedobj.sh,
+					ordSource: 1,
 					enterpriseID: relatedobj.en,
 					pinpaiID: relatedobj.pi,
-					ordSource: 1,
 					quanIds: _ice,
+					orderType: 1,
+					startTime: "",
+					endTime: "",
+					discountsType: 2,
+					discountsActivity: _discountsActivity,
 					data
 				}
+				console.log(highestData);
+				dd();
 			}
-			$('.settlement').click(function() {
+
+			//模式2结账
+			$('.settlement2').click(function() {
 				var isMoble = localStorage.getItem("isMobile");
 				var arrText = [];
-				var ert = 0;
+				var isChecked = "flase";
+				//				var ert = 0;
 				var getLocaShopCat = JSON.parse(localStorage.getItem("dataList"));
-				for(f in getLocaShopCat) {
-					ert += Number(getLocaShopCat[f].num);
+				if($('#coups')[0].hasAttribute("checked") && $('#coups').attr("data-val") == "false") {
+					var yhj = 1;
+				} else {
+					var yhj = 0;
 				}
+
+				$('.FavorableBlock input').each(function() {
+					if($(this)[0].hasAttribute("checked")) {
+						isChecked = "true";
+						return false;
+					} else {
+						isChecked = "flase";
+					}
+				})
+
 				if(getLocaShopCat.length == 0 || getLocaShopCat == null) {
-					// alert('购物车为空,请选择商品后结算');
-					mui.toast('购物车为空,请选择商品后结算');
-				}else if(isMoble == 0 || isMoble == null){
-					// alert("请先完善个人信息");
+					mui.toast('请选择商品后结算');
+				} else if(isMoble == 0 || isMoble == null) {
 					mui.toast('请先完善个人信息');
 					location.href = 'personal_information.html';
+				} else if(yhj == 1) {
+					mui.toast('请选择优惠券');
+				} else if(isChecked == "flase") {
+					mui.toast('请选择活动类型');
 				} else {
 					var ice = [];
-					$('.panel_ul li').each(function() {
-						if($(this).hasClass("actionTF")) {
-							var dataIdYhj = $(this).attr("data-id");
-							ice.push(dataIdYhj);
+					$('.FavorableBlock input').each(function() {
+						if($(this)[0].hasAttribute("checked") && $(this).attr("id") == "coups") {
+							$('.panel_ul li').each(function() {
+								if($(this).hasClass("actionTF")) {
+									var dataIdYhj = $(this).attr("data-id");
+									ice.push(dataIdYhj);
+								}
+							})
+							return false;
+						} else {
+							ice = [];
 						}
 					})
-					console.log(ice);
-					orderDataDtructure(ice);
-					$('.actionTF').each(function() {
-						var dataId = $(this).attr("data-id");
-						arrText.push(dataId);
+					$('.FavorableBlock input').each(function() {
+						if($(this)[0].hasAttribute("checked")) {
+							var tpus = $(this).attr("data-val");
+							console.log(tpus);
+							orderDataDtructure(ice, tpus);
+							return false;
+						} else {}
 					})
-					dd(arrText);
 				}
 			})
 		</script>

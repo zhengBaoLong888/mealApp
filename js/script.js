@@ -162,3 +162,14 @@ function getTask(_proIdVal) {
 		}
 	});
 }
+
+
+//判断模式1或2
+function jumpPage() {
+	var discountsType = JSON.parse(localStorage.getItem("discountsType"));
+	if(discountsType == 1) {
+		location.href = "../html/shopingTrolley_model1.html";
+	} else if(discountsType == 2) {
+		location.href = "../html/shoppingTrolley.html";
+	}
+}

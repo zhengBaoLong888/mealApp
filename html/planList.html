@@ -39,15 +39,15 @@
 
 			function getTaocanList() {
 				var html = '';
-				if(isWhetherSorting == 0) {
+				if (isWhetherSorting == 0) {
 					var endArr = taocanList
 				} else {
 					var compare = function(obj1, obj2) {
 						var val1 = obj1.saleCnt;
 						var val2 = obj2.saleCnt;
-						if(val1 < val2) {
+						if (val1 < val2) {
 							return -1;
-						} else if(val1 > val2) {
+						} else if (val1 > val2) {
 							return 1;
 						} else {
 							return 0;
@@ -58,10 +58,6 @@
 				console.log(endArr);
 
 				var a1 = '';
-				var activity1 = '';
-				var activity2 = '';
-				var activity3 = '';
-				var activity4 = '';
 				$.ajax({
 					type: "post",
 					headers: {
@@ -77,34 +73,63 @@
 					async: false,
 					success: function(resultActivity) {
 						console.log(resultActivity);
-						for(i in endArr) {
-							if(endArr[i].proType == 2) {
+						for (i in endArr) {
+							if (endArr[i].proType == 2) {
+								var activity1 = '';
+								var activity2 = '';
+								var activity3 = '';
+								var activity4 = '';
+								var a = "flase";
+								for (var b = 0; b < resultActivity.data.length; b++) {
+									if (resultActivity.data[b].planType == 3 && endArr[i].isBargain == 1) {
+										a = "ture";
+										break;
+									} else {
+										a = "false";
+									}
+								}
 								html += "<li data-property='" + endArr[i].proId + "'>"
 								html += "<div class='photoDiv'>"
 								html += "<img class='panel-colImg' src='" + endArr[i].imgs[0].path + "'/>"
 								html += "</div>"
 								html += "<div class='panel-row-totle'>"
 								html += "<p class='panel-row1'>" + endArr[i].proName + "</p>"
+								html += "<p class='panel-row4'>"
+								if (a == "ture") {
+									html += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + endArr[i].price +
+										"</span>元</span>"
+									html += "<span style='margin-left:20px;text-decoration:line-through;'>原价:" + endArr[i].origionPrice +
+										"元</span>"
+								} else {
+									html += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + endArr[i].origionPrice +
+										"</span>元</span>"
+								}
+								html += "</p>"
 								html += "<p class='panel-row2'>" + endArr[i].remark + "</p>"
-								html += "<p class='panel-row4'>¥" + endArr[i].price + "</p>"
-								for(io in resultActivity.data) { //活动数据
-									if(resultActivity.data[io].planType == 4) {
+								html += "<input class='getDiscount' type='hidden' value='" + endArr[i].isDiscount + "'>" //折扣
+								html += "<input class='getMoneyOff' type='hidden' value='" + endArr[i].isMoneyOff + "'>" //满减
+								html += "<input class='getBargain' type='hidden' value='" + endArr[i].isBargain + "'>" //特价
+								html += "<input class='getPresented' type='hidden' value='" + endArr[i].isPresented + "'>" //满赠
+								for (io in resultActivity.data) { //活动数据
+									if (resultActivity.data[io].planType == 4) {
 										a1 += "<span>满" + resultActivity.data[io].upToCount + "赠" + resultActivity.data[io].freeCount + "</span>"
 										a1 += "<span class='comma'>,</span>"
 									}
-									if(endArr[i].isBargain == 1 && resultActivity.data[io].planType == 3) { //特价
-										activity1 = "<section style='background-image: url(../img/tejia.png);'>" + resultActivity.data[io].planName + "</section>"
-									} else {}
-									if(endArr[i].isPresented == 1 && resultActivity.data[io].planType == 4) { //满赠
+									if (endArr[i].isBargain == 1 && resultActivity.data[io].planType == 3) { //特价
+										activity1 = "<section style='background-image: url(../img/tejia.png);'>" + resultActivity.data[io].planName +
+											"</section>"
+									}
+									if (endArr[i].isPresented == 1 && resultActivity.data[io].planType == 4) { //满赠
 										activity2 = "<section style='background-image: url(../img/manzeng.png);'>" + a1 + "</section>"
-									} else {}
-									if(endArr[i].isDiscount == 1 && resultActivity.data[io].planType == 1) { //打折
+									}
+									if (endArr[i].isDiscount == 1 && resultActivity.data[io].planType == 1) { //打折
 										var ratio = resultActivity.data[io].ratio / 10;
 										activity3 = "<section style='background-image: url(../img/zhekou.png);'>" + ratio + "折</section>"
-									} else {}
-									if(endArr[i].isMoneyOff == 1 && resultActivity.data[io].planType == 2) { //满减
-										activity4 = "<section style='background-image: url(../img/manjian.png);'>满" + resultActivity.data[io].upToPrice + "减" + resultActivity.data[io].offPrice + "</section>"
-									} else {}
+									}
+									if (endArr[i].isMoneyOff == 1 && resultActivity.data[io].planType == 2) { //满减
+										activity4 = "<section style='background-image: url(../img/manjian.png);'>满" + resultActivity.data[io].upToPrice +
+											"减" + resultActivity.data[io].offPrice + "</section>"
+									}
 								}
 								html += activity1
 								html += activity2
@@ -116,23 +141,21 @@
 						}
 					}
 				})
-					
+
 				$('.shopName').html(ioset.sn);
 				$('.taocanList').html(html);
 				$('.taocanList li').click(function() {
 					var dataProId = $(this).attr("data-property");
 					var indexLi = $(this).index();
 					localStorage.setItem("taocanProIdVariable", JSON.stringify(dataProId));
-					localStorage.setItem("taocanindexLi", JSON.stringify(indexLi));
 					location.href = 'taocanDetails.html';
 				})
 			}
-			if(ioset.sh == null){
+			if (ioset.sh == null) {
 				$('#monthRanking').hide();
-			}else{
+			} else {
 				getTaocanList();
 			}
-			
 
 			$('#monthRanking').click(function() {
 				isWhetherSorting = 1;
