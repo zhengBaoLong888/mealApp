@@ -218,7 +218,6 @@
 				url: base + "sale_inte/consumers/shopName.action",
 				ContentType: "application/json",
 				success: function(result) {
-					alert(JSON.stringify(result));
 					localStorage.setItem("discountsType", JSON.stringify(result.data[0].discountsType));
 					localStorage.setItem("storesInformation", JSON.stringify(result));
 					if (result.data == '') {
