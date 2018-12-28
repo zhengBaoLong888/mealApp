@@ -63,7 +63,6 @@ function getGoodsArray(_jl1_send, _jl1_name, _jl2_send, _kw1_send, _kw1_name, _i
 function getShopCatNum() {
 	var numCould = 0;
 	var getArray = JSON.parse(localStorage.getItem("dataList"));
-	console.log(getArray);
 	if(getArray == null || getArray == '') {
 		$('#count').html('0');
 	} else {
@@ -92,7 +91,6 @@ function getTask(_proIdVal) {
 		success: function(result) {
 			//alert(JSON.stringify(result));
 			var cpList = JSON.parse(localStorage.getItem("products"));
-			console.log(result);
 			var ge1 = '';
 			var tasteHtml2 = '';
 			var kw1 = '';

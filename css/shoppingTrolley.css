@@ -370,3 +370,83 @@ input:disabled {
 	justify-content: flex-start;
 	align-items: center;
 }
+
+
+.markst{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 99;
+	background-color: rgba(0, 0, 0, 0.8);
+	display: none;
+}
+ #phoneCreat{
+	width: 50%;
+	text-align: center;
+	color:#fff;
+	font-size: 22px;
+	margin: 6% auto 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#phoneCreat span{
+	background-color: #e33b17;
+	padding: 6px 12px;
+	width:40%;
+	border-radius: 10px;
+}
+.menuBox{
+	width: 84%;
+	margin: 60% auto 0;
+	background-color: #fff;
+	border-radius: 20px;
+	padding:40px 20px 20px 20px;
+}
+.menuBox .name {
+	margin:0 auto;
+	width:70%;
+	display: block;
+	font-size: 28px;
+	padding: 15px 20px;
+}
+
+#row1,#row2{
+	margin: 0 auto;
+	border: #a3b0b8 solid 1px;
+	width: 80%;
+	border-radius:10px;
+	background-color: #fff;
+}
+#row1{
+	position: relative;
+}
+#row2{
+	margin-top: 2%;
+	margin-bottom: 10px;
+}
+#getCode {
+	padding: 7px 10px;
+	position: absolute;
+	top: 6px;
+	right: 2px;
+	color: #fff;
+	font-size: 20px;
+	display: block;
+	border: none;
+	background-color: #ec9e13;
+	border-radius: 10px;
+}
+.cady{
+	padding: 26px 20px !important;
+	margin-bottom: 0 !important;
+	font-size: 26px;
+}
+#msYou{
+	width: 80%;
+	margin: 0 auto 20px;
+	font-size: 20px;
+	text-align: center;
+}

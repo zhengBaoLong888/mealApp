@@ -19,7 +19,9 @@ header {
 	float: left;
 	color: #fff;
 }
-
+.classifyBox{
+	margin-top: 30px;
+}
 .headSwitchStores_left {
 	width: 70%;
 	padding-left: 1.1rem;
@@ -109,7 +111,7 @@ header {
 .advertising {
 	width: 100%;
 	padding: 20px 0 20px;
-	height: 228px;
+	/* height: 228px; */
 }
 
 .advertising img,
@@ -233,7 +235,7 @@ header {
 
 .list_liStyle {
 	position: relative;
-	padding-top: 27px;
+	padding: 20px 0;
 	border-bottom: #eeeeee solid 1px;
 	font-family: "微软雅黑";
 }
@@ -280,27 +282,15 @@ header {
 	background-color: transparent;
 }
 
-.withReducedActivity {
-	margin-left: calc(16.8% + 15px);
-	padding-bottom: 10px;
-	/*background-image: url(../img/index_sj.png);*/
-	background-position: top right;
-	background-repeat: no-repeat;
-	background-size: 18px 13px;
-}
 
 .withReducedActivity section {
 	padding-left: 50px;
 	background-position: 0 100%;
 	background-repeat: no-repeat;
 	background-size: 40px 23px;
-	margin-top: 20px;
-	margin-bottom: 10px;
 }
 
-.withReducedActivity section:first-child {
-	margin-top: 30px;
-}
+
 
 .near {
 	display: flex;

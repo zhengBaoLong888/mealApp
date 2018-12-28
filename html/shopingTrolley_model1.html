@@ -97,7 +97,6 @@
 			var ican = uuid();
 
 			$('.dianPuName').html(relatedobj.sn);
-			console.log(localityDataList);
 
 			//购物车列表 start
 			if(localityDataList.length == 0) {
@@ -374,7 +373,6 @@
 							nums: naspinner
 						}
 						naArray.push(naproductObj);
-						console.log(naArray);
 					}
 				});
 				for(var i = 0; i < naArray.length; i++) {
@@ -558,7 +556,6 @@
 				localStorage.setItem("dataList", JSON.stringify(localityDataList));
 				$(this).siblings('.shopSpinnerInput').val(countNum);
 				var a = JSON.parse(localStorage.getItem("dataList"));
-				console.log();
 				unitPrice(); //计算单价
 				buyGift(); //买赠
 				specialOffer(); //特价
@@ -613,7 +610,6 @@
 					},
 					success: function(result) {
 						jishu = [];
-						console.log(result);
 						for(var i = 0; i < result.data.length; i++) {
 							if(result.data[i].status == 0) {
 								jishu.push(result.data[i]);
@@ -745,7 +741,6 @@
 							$('.marksYdn').show();
 						},
 					success: function(resultAsx) {
-						console.log(resultAsx);
 						if(resultAsx.data.totalPrice == '0.00') {
 							// alert("下单成功");
 							mui.toast('下单成功');
@@ -951,7 +946,6 @@
 							ice.push(dataIdYhj);
 						}
 					})
-					console.log(ice);
 					orderDataDtructure(ice);
 					$('.actionTF').each(function() {
 						var dataId = $(this).attr("data-id");

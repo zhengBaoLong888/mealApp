@@ -4,7 +4,6 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=640,minimum-scale=0.4,maximum-scale=2.0,user-scalable=no" />
-	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" />
@@ -28,7 +27,7 @@
 					<span class="main_announcementCol1Row1">抢购
 						<br />时间</span>
 					<div class="main_announcementCol1Row2">
-						<p>每天12点~19点整点限量开枪</p>
+						<p>每天12点~19点整点限量开抢</p>
 						<p id="countdown" style="font-size: 18px;"></p>
 					</div>
 				</div>
@@ -41,13 +40,11 @@
 			</div>
 			<div class="marksuhn"></div>
 			<ul class="coupsList">
-				
+
 			</ul>
+			<img id="goIndex" src="https://www.goodb2b.cn/xdxd_file/goIndex.png" alt="去主页" />
 		</div>
-		<!-- <img id="goIndex" src="https://www.goodb2b.cn/jqrwebapp_img/index_but_1.png" alt="去主页"> -->
-		<div id="goIndex2">去主页</div>
 	</div>
-	<script type="text/javascript" src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
 	<script src="../js/mui.min.js"></script>
 	<script>
@@ -56,14 +53,14 @@
 		var token = localStorage.getItem("token");
 		var Authorization = "Bearer " + token;
 		var base = localStorage.getItem("base");
-		var together = 0;
 		var isCountdown = "false";
+		var serverTime, endTime;
 
 
-		$('#goIndex2').click(function(){
+		$('#goIndex').click(function () {
 			var historyIndex = 0;
 			sessionStorage.setItem("historyIndex", historyIndex);
-			location.href = "https://www.goodb2b.cn/mealApptest/html/template.html?tk="+token+"&pinpaiID="+relatedobj.pi+"";
+			location.href = "https://www.goodb2b.cn/mealApptest/html/template.html?tk=" + token + "&pinpaiID=" + relatedobj.pi + "";
 		})
 
 		function isReceive(_couponsId) {
@@ -80,7 +77,6 @@
 				async: false,
 				url: base + "sale_inte/coupons/fetchIt.action",
 				success: function (result) {
-					console.log(result);
 					if (result.code == "1165") {
 						mui.toast('活动未开始');
 					} else if (result.code == "1185") {
@@ -115,13 +111,10 @@
 				url: base + "sale_inte/coupons/rule.action",
 				async: false,
 				success: function (result) {
-					console.log(result);
 					if (result.data[0].openFlag == 1) {
 						isCountdown = "true";
-						var hours = result.data[0].serverTime.substring(11, 13);
-						var minuteJ = result.data[0].serverTime.substring(14, 16);
-						var secondsJ = result.data[0].serverTime.substring(17, 19);
-						together = Number(hours) + Number(minuteJ) + Number(secondsJ);
+						serverTime = result.data[0].serverTime; //开始时间
+						endTime = result.data[0].endTime; //结束时间
 					} else {
 						isCountdown = "false";
 					}
@@ -144,11 +137,23 @@
 							html += "</li>"
 						}
 						$('.coupsList').html(html);
+
+						if (result.data[0].openFlag == 0) {
+							$('.coupsList li').addClass("tps");
+						} else {
+
+						}
+
 						$('.coupsList li').click(function () {
-							var couponsId = $(this).attr("data-id");
-							rule(); //优惠券渲染
-							isReceive(couponsId); //领取优惠券
+							if (result.data[0].openFlag == 0) {
+
+							} else {
+								var couponsId = $(this).attr("data-id");
+								rule(); //优惠券渲染
+								isReceive(couponsId); //领取优惠券
+							}
 						})
+					
 					}
 				}
 			})
@@ -156,12 +161,34 @@
 		rule();
 
 		if (isCountdown == "true") {
-			var maxtime = together; //一个小时，按秒计算，自己调整!   
+			var a = serverTime;
+			var b = endTime;
+			var myDate = new Date();
+			var year = myDate.getFullYear();
+			var mo = myDate.getMonth() + 1;
+			var yad = myDate.getDate();
+			var ph = year + "-" + mo + "-" + yad + " " + b;
+
+			var date1 = new Date(a);
+			var date2 = new Date(ph);
+
+			var s1 = date1.getTime(),
+				s2 = date2.getTime();
+			var total = (s2 - s1) / 1000;
+			var day = parseInt(total / (24 * 60 * 60)); //计算整数天数
+			var afterDay = total - day * 24 * 60 * 60; //取得算出天数后剩余的秒数
+			var hour = parseInt(afterDay / (60 * 60)); //计算整数小时数
+			var afterHour = total - day * 24 * 60 * 60 - hour * 60 * 60; //取得算出小时数后剩余的秒数
+			var min = parseInt(afterHour / 60); //计算整数分
+			var afterMin = total - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60; //取得算出分后剩余的秒数
+
+
+			var maxtime = afterHour; 
 			function CountDown() {
 				if (maxtime >= 0) {
 					minutes = Math.floor(maxtime / 60);
 					seconds = Math.floor(maxtime % 60);
-					msg = "距离开抢还有" + minutes + "分" + seconds + "秒";
+					msg = "距离结束还有" + minutes + "分" + seconds + "秒";
 					document.all["countdown"].innerHTML = msg;
 					if (maxtime == 5 * 60);
 					--maxtime;
@@ -171,81 +198,8 @@
 			}
 			timer = setInterval("CountDown()", 1000);
 		} else {
-			$('#countdown').html("距离开抢时间还有：未开始");
+			$('#countdown').html("距离结束时间还有：未开始");
 		}
-
-
-		var urlLink = 'https://www.goodb2b.cn/mealApptest/img/icon.png';
-		var urlCode = "https://www.goodb2b.cn/robert/sale_inte/wxController.action?pinpaiID=" + relatedobj.pi + "" + "&sad=" + "https%3a%2f%2fwww.goodb2b.cn%2fmealApptest%2fhtml%2fdiscover_sub_2.html";
-		// var urlCode = "https://www.goodb2b.cn/mealApptest/html/template.html";
-		var appid, tp, noncestr, sie;
-		var urlHref = location.href.split('#')[0];
-
-
-
-
-		$.ajax({
-			type: "post",
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded",
-				"Authorization": Authorization
-			},
-			data: {
-				"pinpaiId": 1,
-				"url": urlHref
-			},
-			dataType: "json",
-			async: false,
-			url: base + "sale_inte/wx/jssdkConfig.action",
-			success: function (result) {
-				console.log(result);
-				appid = result.data.appId;
-				tp = result.data.timestamp;
-				noncestr = result.data.nonceStr;
-				sie = result.data.signature;
-
-
-
-				wx.config({
-					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-					appId: appid, // 必填，公众号的唯一标识
-					timestamp: tp, // 必填，生成签名的时间戳
-					nonceStr: noncestr, // 必填，生成签名的随机串
-					signature: sie, // 必填，签名
-					jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'] // 必填，需要使用的JS接口列表
-				});
-
-
-			}
-		})
-
-
-
-		wx.ready(function () {
-			wx.updateAppMessageShareData({
-				title: '小玎小珰送优惠券啦,快来抢哦~', // 分享标题
-				desc: '庆开业，分享喜悦，拼手速抢代金券', // 分享描述
-				link: urlCode, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-				imgUrl: urlLink, // 分享图标
-				success: function (rel) {
-
-				}
-			});
-
-
-			wx.updateTimelineShareData({
-				title: '小玎小珰送优惠券啦,快来抢哦~', // 分享标题
-				desc: '庆开业，分享喜悦，拼手速抢代金券', // 分享描述
-				link: urlCode, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-				imgUrl: urlLink, // 分享图标
-				success: function () {
-
-				}
-			});
-		});
-
-
-
 
 		$('.coupsList li').click(function () {
 			var couponsId = $(this).attr("data-id");
@@ -262,10 +216,8 @@
 				async: false,
 				url: base + "sale_inte/coupons/fetchIt.action",
 				success: function (result) {
-
 				}
 			})
-
 		})
 
 

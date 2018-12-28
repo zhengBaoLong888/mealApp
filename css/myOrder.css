@@ -15,6 +15,7 @@
 	width: 100%;
 	padding: 30px 0;
 	text-align: center;
+	margin: 50px auto 0;
 	font-size: 22px;
 	background-color: #f1f1f1;
 	background-image: url(../img/loading4.gif);
@@ -197,7 +198,12 @@
 	font-size: 22px;
 	color: #333333;
 	text-align: center;
+	padding-top: 110px;
 	display: none;
+	background-image: url(../img/noorder.png);
+	background-position: 50% 30%;
+	background-repeat: no-repeat;
+	background-size: 113px 111px;
 }
 
 .divOr {

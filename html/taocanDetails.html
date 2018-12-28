@@ -134,7 +134,6 @@
 				return uuid;
 			}
 			var ican = uuid();
-			console.log(ican);
 
 			$(function() {
 				var htmlHeight = $('body').height();
@@ -171,7 +170,6 @@
 			function getShopCatNum() {
 				var numCould = 0;
 				var getArray = JSON.parse(localStorage.getItem("dataList"));
-				console.log(getArray);
 				if(getArray == null || getArray == '') {
 					$('#count').html('0');
 				} else {
@@ -203,7 +201,6 @@
 					url: base + "sale_inte/consumers/package.action",
 					ContentType: "application/json",
 					success: function(result) {
-						console.log(result);
 						goodsList = result;
 						for(w in result.data) {
 							html += "<div class='mdjsj' data-isChanaged='" + result.data[w].isChanaged + "'>"
@@ -279,7 +276,6 @@
 								},
 								ContentType: "application/json",
 								success: function(result) {
-									console.log(result);
 									if(result.data.length == 0) {
 										$('.list_2').html("<span class='have'>此商品不能更换哦 ~</span>");
 									} else {
@@ -336,7 +332,6 @@
 								ContentType: "application/json",
 								success: function(result) {
 									var cpList = JSON.parse(localStorage.getItem("products"));
-									console.log(result);
 									var ge1 = '';
 									var tasteHtml2 = '';
 									var kw1 = '';
@@ -502,7 +497,6 @@
 								goodsProName: $('#shopName').text(),
 								dataTaoCanArray
 							}
-							console.log(dataObject);
 							var addTaoCan = JSON.parse(localStorage.getItem("dataList"));
 							addTaoCan.push(dataObject);
 							localStorage.setItem("dataList", JSON.stringify(addTaoCan));

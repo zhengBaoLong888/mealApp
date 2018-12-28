@@ -23,6 +23,7 @@
 		</article>
 
 		<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../js/acing.js"></script>
 		<script>
 			var base = localStorage.getItem("base");
 			var token = localStorage.getItem("token");
@@ -44,7 +45,6 @@
 						"pinpaiID": relatedobj.pi
 					},
 					success: function(result) {
-						console.log(result);
 						for(var i = 0; i < result.data.length; i++) {
 							htmlVoucher += "<li data-id='" + result.data[i].couId + "' data-statue = '" + result.data[i].status + "'>"
 							htmlVoucher += "<div class='z-marks-withe'>"

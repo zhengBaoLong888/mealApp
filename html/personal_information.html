@@ -235,15 +235,6 @@
 					dataType: "json",
 					url: base + "sale_inte/uesr/info.action",
 					success: function(result) {
-						console.log(result);
-						if(result.data.mobile == null){
-							var isMobile = 0;
-							localStorage.setItem("isMobile",isMobile);
-						}else{
-							var isMobile = 1;
-							localStorage.setItem("isMobile",isMobile);
-						}
-						
 						$('#nickname').val(result.data.loginName);
 						$('#gender').val(result.data.gender);
 						$('#birthday').val(result.data.birthday);
@@ -308,7 +299,6 @@
 										url: base + "sale_inte/uesr/editInfo.action",
 										ContentType: "application/json",
 										success: function(resultDake) {
-											console.log(resultDake);
 											if(resultDake.msg == 'yes') {
 												// alert("保存成功 ");
 												mui.toast('保存成功！');

@@ -1,6 +1,11 @@
+html,body{
+	height: auto;
+}
 #detail{
 	height: 100%;
 }
 #conent-main-bg{
 	height: calc(100% - 86px);
 }
+
+

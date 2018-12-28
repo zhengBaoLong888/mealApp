@@ -12,7 +12,9 @@
 </head>
 
 <body class="entirety-bg">
-	<div class="marksYdn"><span>请稍后...</span></div>
+	<div class="marksYdn">
+		<span>请稍后...</span>
+	</div>
 	<div class="mui-content">
 		<div class="content-overall commen-style">
 			<aside class="commenBack-head">
@@ -29,7 +31,8 @@
 				<div class="show">购物车还是空的哦~</div>
 				<div class="coupons">
 					<span>选择优惠券</span>
-					<div class="numAva"><span id="available">0</span>张可用</div>
+					<div class="numAva">
+						<span id="available">0</span>张可用</div>
 					<img id="yhjImg" src="../img/comment_3.png" />
 				</div>
 
@@ -38,48 +41,61 @@
 					<form action="" method="post">
 						<div class="FavorableBlock no" id="p_mz">
 							<div class="setFlex">
-								<input data-val="3" name="Fruit" type="radio" value="mz" /><label>参加满赠后优惠的价格：<span class="preferentialPirce" id="another_mz">0</span></label>
+								<input data-val="3" name="Fruit" type="radio" value="mz" />
+								<label>参加满赠后优惠的价格：
+									<span class="preferentialPirce" id="another_mz">0</span>
+								</label>
 							</div>
 						</div>
 
 						<div class="FavorableBlock no" id="p_mj">
 							<div class="setFlex">
-								<input data-val="2" name="Fruit" type="radio" value="mj" /><label>参加满减后优惠的价格：<span class="preferentialPirce" id="another_mj">0</span></label>
+								<input data-val="2" name="Fruit" type="radio" value="mj" />
+								<label>参加满减后优惠的价格：
+									<span class="preferentialPirce" id="another_mj">0</span>
+								</label>
 							</div>
 						</div>
 
 						<div class="FavorableBlock no" id="p_zk">
 							<div class="setFlex">
-								<input data-val="1" name="Fruit" type="radio" value="zk" /><label>参加折扣后优惠的价格：<span class="preferentialPirce" id="another_zk">0</span></label>
+								<input data-val="1" name="Fruit" type="radio" value="zk" />
+								<label>参加折扣后优惠的价格：
+									<span class="preferentialPirce" id="another_zk">0</span>
+								</label>
 							</div>
 						</div>
 						<div class="FavorableBlock no" id="p_tj">
 							<div class="setFlex">
-								<input data-val="4" name="Fruit" type="radio" value="tj" /><label>参加特价后优惠的价格：<span class="preferentialPirce" id="another_tj">0</span></label>
+								<input data-val="4" name="Fruit" type="radio" value="tj" />
+								<label>参加特价后优惠的价格：
+									<span class="preferentialPirce" id="another_tj">0</span>
+								</label>
 							</div>
 						</div>
 						<div class="FavorableBlock" id="coupsDiv">
 							<div class="setFlex">
-								<input id="coups" data-val="false" name="Fruit" type="radio" value="yhj" /><label>使用优惠券后优惠的价格：<span class="preferentialPirce"
-									 id="another_yhj">未选择优惠券</span></label>
+								<input id="coups" data-val="false" name="Fruit" type="radio" value="yhj" />
+								<label>使用优惠券后优惠的价格：
+									<span class="preferentialPirce" id="another_yhj">未选择优惠券</span>
+								</label>
 							</div>
 						</div>
 						<div class="FavorableBlock no" id="p_noHd">
 							<div class="setFlex">
-								<input data-val="2" name="Fruit" type="radio" value="refused"><label>不参加任何活动：<span class="preferentialPirce" id="another_refused">0</span></label>
+								<input data-val="2" name="Fruit" type="radio" value="refused">
+								<label>不参加任何活动：
+									<span class="preferentialPirce" id="another_refused">0</span>
+								</label>
 							</div>
 						</div>
 					</form>
 				</div>
 
-				<article class="js-btn">
-					<span>合计:</span>
-					<span id="combined" style="color:#f90d0d;padding: 0 40px 0 15px;">0</span>
-					<span class="settlement">去结算</span>
-				</article>
+
 
 				<article class="js-btn2">
-					<span class="settlement2">去结算</span>
+					<span class="settlement3">去结算</span>
 				</article>
 			</div>
 
@@ -94,6 +110,22 @@
 					<span id="confirm" onclick="getCoupons();">确定</span>
 				</div>
 			</article>
+		</div>
+		<div class="markst">
+			<div class="menuBox">
+				<p id="msYou">请先填写手机号后结算</p>
+				<div id="row1">
+					<input class="cady" id="phone" type="text" name="" value="" placeholder="请填写手机号" />
+					<input id="getCode" type="button" value="获取验证码" onclick="sendMessages();" />
+				</div>
+				<div id="row2">
+					<input class="cady" id="rpcode" type="text" name="" value="" placeholder="请填写验证码" />
+				</div>
+				<div id="phoneCreat">
+					<span id="xq">取消</span>
+					<span id="dq">确定</span>
+				</div>
+			</div>
 		</div>
 	</div>
 	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
@@ -111,9 +143,126 @@
 		var highestData = {};
 		var jishu = [];
 		var jsCount = 0;
+		var isMobile = 0;
+		var InterValObj; //timer变量，控制时间 
+		var count = 60; //间隔函数，1秒执行 
+		var curCount; //当前剩余秒数 
+		var code = ""; //验证码 
+		var codeLength = 6; //验证码长度 
 		//获取当前时间
 		var colData = getDate();
 		console.log(localityDataList);
+
+		function sendMessages() {
+			curCount = count;
+			var phone = $("#phone").val()
+			if (phone != "") {
+				//设置button效果，开始计时 
+				$("#getCode").attr("disabled", "true");
+				$("#getCode").val("请在" + curCount + "秒内输入");
+				InterValObj = window.setInterval(SetRemainTimes, 1000); //启动计时器，1秒执行一次 
+				//向后台发送处理数据 
+				$.ajax({
+					type: "post",
+					url: base + "sale_inte/system/smscheckcode.action",
+					data: {
+						"pinpaiID": relatedobj.pi,
+						"mobile": phone
+					},
+					success: function (result) {
+						console.log(result);
+					}
+				});
+			} else {
+				alert("手机号码不能为空！");
+			}
+		}
+		//timer处理函数 
+		function SetRemainTimes() {
+			if (curCount == 0) {
+				window.clearInterval(InterValObj); //停止计时器 
+				$("#getCode").removeAttr("disabled"); //启用按钮 
+				$("#getCode").val("重新发送验证码");
+				code = ""; //清除验证码。如果不清除，过时间后，输入收到的验证码依然有效   
+			} else {
+				curCount--;
+				$("#getCode").val("请在" + curCount + "秒内输入");
+			}
+		}
+		//验证手机号
+		function validatePhone(_phone, _rpcode) {
+			var myreg = /^(((13[0-9]{1})|(17[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+			if (_phone == '') {
+				mui.toast('请先填写手机号');
+				return true;
+			} else if (_rpcode == '') {
+				mui.toast('请填写验证码');
+			} else if (!myreg.test(_phone)) {
+				mui.toast('手机号无效');
+			} else {
+				$.ajax({
+					type: "post",
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded",
+						"Authorization": Authorization
+					},
+					url: base + "sale_inte/system/smscheckcodeValidate.action",
+
+					data: {
+						"mobile": _phone,
+						"checkcode": _rpcode
+					},
+					success: function (result) {
+						if (result.msg == 'yes') {
+							$.ajax({
+								type: "POST",
+								headers: {
+									"Content-Type": "application/x-www-form-urlencoded",
+									"Authorization": Authorization
+								},
+								data: {
+									"mobile": _phone,
+									"mobileCheckcode": _rpcode
+								},
+								dataType: "json",
+								url: base + "sale_inte/uesr/editInfo.action",
+								ContentType: "application/json",
+								success: function (resultDake) {
+									console.log(resultDake);
+									if (resultDake.msg == 'yes') {
+										var useact = 1;
+										// mui.toast('保存成功');
+										alert("保存成功");
+										isMobile = 1;
+										$('.markst').hide();
+									} else {
+										mui.toast('保存失败');
+									}
+								}
+							})
+						} else {
+							mui.toast('验证码错误');
+							$('#rpcode').val('');
+						}
+					}
+				});
+			}
+		}
+
+		$('#dq').click(function () {
+			var phoneTe = $('#phone').val();
+			var rpcodeTe = $('#rpcode').val();
+			validatePhone(phoneTe, rpcodeTe);
+		})
+		$('#xq').click(function () {
+			$('#phone').val('');
+			$('#rpcode').val('');
+			$('.markst').hide();
+		})
+
+
+
+
 
 		function uuid() {
 			var s = [];
@@ -131,6 +280,49 @@
 
 		$('.dianPuName').html(relatedobj.sn);
 
+		var resultData;
+		var mzKyo = "false";
+		var tjKyo = "false";
+		var mjKyo = "false";
+		var zkKyo = "false";
+		function getpromotion() {
+			$.ajax({
+				type: "post",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+					"Authorization": Authorization
+				},
+				data: {
+					"shopID": relatedobj.sh,
+					"enterpriseID": relatedobj.en,
+					"pinpaiID": relatedobj.pi
+				},
+				url: base + "sale_inte/salespromotion/getpromotion.action",
+				async: false,
+				success: function (result) {
+					console.log(result);
+					resultData = result.data;
+
+					for (var index = 0; index < result.data.length; index++) {
+						if (result.data[index].planType == 4) {//买赠
+							mzKyo = "true";
+						} else if (result.data[index].planType == 3) {//特价
+							tjKyo = "true";
+						} else if (result.data[index].planType == 2) {//满减
+							mjKyo = "true";
+						} else if (result.data[index].planType == 1) {//折扣
+							zkKyo = "true";
+						}
+
+					}
+				}
+			});
+		}
+		getpromotion();
+
+
+
+
 		//购物车列表 start
 		if (localityDataList.length == 0) {
 			$('.show').show();
@@ -147,16 +339,16 @@
 
 					html += "<span class='goodsName' data-relName='" + localityDataList[i].goodsProName + "'>" + localityDataList[i].goodsProName +
 						"</span>"
-					if (localityDataList[i].isDz == 1) {
+					if (localityDataList[i].isDz == 1 && zkKyo == "true") {
 						html += "<img class='shopCat-img' src='../img/zhekou.png'/>"
 					}
-					if (localityDataList[i].isMz == 1) {
+					if (localityDataList[i].isMz == 1 && mzKyo == "true") {
 						html += "<img class='shopCat-img' src='../img/manzeng.png'/>"
 					}
-					if (localityDataList[i].isMj == 1) {
+					if (localityDataList[i].isMj == 1 && mjKyo == "true") {
 						html += "<img class='shopCat-img' src='../img/manjian.png'/>"
 					}
-					if (localityDataList[i].isTj == 1) {
+					if (localityDataList[i].isTj == 1 && tjKyo == "true") {
 						html += "<img class='shopCat-img' src='../img/tejia.png'/>"
 					}
 					html += "</div>"
@@ -321,29 +513,7 @@
 		}
 
 		$('.js-btn2').show();
-		var resultData;
 
-		function getpromotion() {
-			$.ajax({
-				type: "post",
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-					"Authorization": Authorization
-				},
-				data: {
-					"shopID": relatedobj.sh,
-					"enterpriseID": relatedobj.en,
-					"pinpaiID": relatedobj.pi
-				},
-				url: base + "sale_inte/salespromotion/getpromotion.action",
-				async: false,
-				success: function (result) {
-					console.log(result);
-					resultData = result.data;
-				}
-			});
-		}
-		getpromotion();
 
 		//满赠
 		function buyGift() {
@@ -385,19 +555,24 @@
 					if (resultData[l].planType == 4) {
 						var x = resultData[l].upToCount;
 						var y = resultData[l].freeCount;
-						var v = ner - x - y;
-						if (v < 0) {
-							v = 0;
-						} else {}
-						var z = x + v;
+						if (ner >= x) {
+							var z = ner - y;
 
-						if (z < temp) {
-							temp = z;
-							uc = resultData[l].upToCount;
-							fe = resultData[l].freeCount;
+							if (z < temp) {
+								temp = z;
+								uc = resultData[l].upToCount;
+								fe = resultData[l].freeCount;
+							}
 						}
+						// var v = ner - x - y;
+						// if (v < 0) {
+						// 	v = 0;
+						// } else {}
+						// var z = x + v;
+
 					}
 				};
+
 				var compare = function (obj1, obj2) {
 					var val1 = obj1.otpr;
 					var val2 = obj2.otpr;
@@ -411,7 +586,8 @@
 				}
 				activityArray.sort(compare);
 				var replaceTemp = ner - temp; //赠送杯数 
-				var totNum = uc + fe;
+				var totNum = uc;
+				debugger;
 				if (ner < totNum) {
 					ultimatePrice = tolPri;
 				} else {
@@ -577,7 +753,7 @@
 			var choiceActivity = $(this).find("input").attr("data-val");
 			if (choiceActivity == "false") {
 				mui.toast('请选择优惠券');
-			} else {}
+			} else { }
 			$('.FavorableBlock').find("input").removeAttr("checked");
 			$(this).find("input").attr("checked", "checked");
 		})
@@ -594,11 +770,12 @@
 					totalQuantity += Number(num);
 					for (var j = 0; j < resultData.length; j++) {
 						if (resultData[j].planType == 4) {
-							var upToCount = resultData[j].upToCount + 1;
+							var upToCount = resultData[j].upToCount;
 						}
 					}
 					if (totalQuantity >= upToCount) {
 						var mz = buyGift();
+
 						console.log(mz);
 						$('.shopCardetails_row2').each(function () {
 							if ($(this).find(".mz").val() == 0) {
@@ -611,8 +788,8 @@
 						var showPrice = mzOtherPrice + mz;
 						$('#another_mz').html(showPrice.toFixed(2));
 						$('#p_mz').show();
-					} else {}
-				} else {}
+					} else { }
+				} else { }
 
 				//特价
 				if ($(this).find(".tj").val() == 1) {
@@ -663,7 +840,7 @@
 				}
 
 				//折扣
-				if ($(this).find(".zk").val() == 1) {
+				if ($(this).find(".zk").val() == 1 && zkKyo == "true") {
 					var zkOtherPrice = 0;
 					var zk = discount();
 					$('.shopCardetails_row2').each(function () {
@@ -682,14 +859,14 @@
 				}
 
 				//不参加任何活动
-				if ($(this).find(".mz").val() == 0 && $(this).find(".tj").val() == 0 && $(this).find(".mj").val() == 0 && $(this)
-					.find(".zk").val() == 0) {
-					var showNoActivity = noActivity();
-					$('#another_refused').html(showNoActivity);
-					$('#p_noHd').show();
-				} else {
+				// if ($(this).find(".mz").val() == 0 && $(this).find(".tj").val() == 0 && $(this).find(".mj").val() == 0 && $(this)
+				// 	.find(".zk").val() == 0) {
+				var showNoActivity = noActivity();
+				$('#another_refused').html(showNoActivity);
+				$('#p_noHd').show();
+				// } else {
 
-				}
+				// }
 			})
 		}
 		getPirce();
@@ -842,7 +1019,7 @@
 					} else {
 						$('#coupsDiv').show();
 					}
-					
+
 					$('.panel_ul li').click(function () {
 						var arrgs = JSON.parse(localStorage.getItem("dataList"));
 						if (arrgs.length == 0) {
@@ -867,7 +1044,7 @@
 				if ($(this)[0].hasAttribute("checked")) {
 					var pp = $(this).parents(".FavorableBlock").find(".preferentialPirce").text();
 					$('#combined').html(pp);
-				} else {}
+				} else { }
 			})
 		}
 		setTotil();
@@ -1096,12 +1273,36 @@
 			dd();
 		}
 
+		
+
+		//判断用户是否填过手机号
+		function getUserInformation() {
+			$.ajax({
+				type: "POST",
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+					"Authorization": Authorization
+				},
+				dataType: "json",
+				url: base + "sale_inte/uesr/info.action",
+				success: function (result) {
+					console.log(result);
+					if (result.data.mobile == null || result.data.mobile == "") {
+						isMobile = 0;
+					} else {
+						isMobile = 1;
+					}
+				}
+			});
+		}
+		getUserInformation();
+
+
+
 		//模式2结账
-		$('.settlement2').click(function () {
-			var isMoble = localStorage.getItem("isMobile");
+		$('.settlement3').click(function () {
 			var arrText = [];
 			var isChecked = "flase";
-			//				var ert = 0;
 			var getLocaShopCat = JSON.parse(localStorage.getItem("dataList"));
 			if ($('#coups')[0].hasAttribute("checked") && $('#coups').attr("data-val") == "false") {
 				var yhj = 1;
@@ -1120,9 +1321,9 @@
 
 			if (getLocaShopCat.length == 0 || getLocaShopCat == null) {
 				mui.toast('请选择商品后结算');
-			} else if (isMoble == 0 || isMoble == null) {
-				mui.toast('请先完善个人信息');
-				location.href = 'personal_information.html';
+			} else if (isMobile == 0) {
+				// mui.toast('请先完善个人信息');
+				$('.markst').show();
 			} else if (yhj == 1) {
 				mui.toast('请选择优惠券');
 			} else if (isChecked == "flase") {
@@ -1148,7 +1349,7 @@
 						console.log(tpus);
 						orderDataDtructure(ice, tpus);
 						return false;
-					} else {}
+					} else { }
 				})
 			}
 		})

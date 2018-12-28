@@ -11,11 +11,11 @@
 	</head>
 
 	<body class="entirety-bg font-fam-style" style="background-color: #fff;">
-		<div id="load">加载中...</div>
+		<!-- <div id="load"></div> -->
 		<div class="store-main-div">
 
 		</div>
-		<div class="nullYoat">订单为空~</div>
+		<div class="nullYoat"></div>
 		<div class="marks">
 			<div id="qrcode"></div>
 		</div>
@@ -47,17 +47,18 @@
 						"ordSource": 1
 					},
 					beforeSend: function() {
-						$('#load').show();
+						// $('#load').show();
 						$('.store-main-div').hide();
 					},
 					success: function(result) {
-						console.log(result);
 						if(result.data.rows.length == 0) {
 							$('#ddDisplay').hide();
+							$('.nullYoat').html("订单为空~");
 							$('.nullYoat').show();
 							$('.store-main').hide();
 						} else {
 							$('#ddDisplay').show();
+							$('.nullYoat').html("");
 							$('.nullYoat').hide();
 							for(var i = 0; i < result.data.rows.length; i++) {
 								html += "<article class='store-main'>"
@@ -272,13 +273,13 @@
 					},
 					complete: function() { //完成响应
 						$('.store-main-div').show();
-						$('#load').hide();
+						// $('#load').hide();
 					}
 				});
 
 			}
 			if(information.sh == null) {
-				$('#load').hide();
+				// $('#load').hide();
 			} else {
 				orderList();
 			}

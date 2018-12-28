@@ -1,22 +1,51 @@
 <!DOCTYPE html>
 <html style="height:100%;">
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<link rel="stylesheet" href="../css/discover_details.css" />
-	</head>
 
-	<body>
-		<div id="detail">
+<head>
+	<meta charset="UTF-8">
+	<title>活动</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=640,minimum-scale=0.4,maximum-scale=2.0,user-scalable=no" />
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+	<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<link rel="stylesheet" href="../css/commen.css" />
+	<link rel="stylesheet" href="../css/discover_details.css" />
+	<style>
+		#btn-index {
+			width: 50%;
+			position: absolute;
+			bottom: 0;
+			left: 25%;
+			z-index: 10;
+			margin-bottom: 6%;
+		}
 
-		</div>
-		<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
-		<script>
-			var base = localStorage.getItem("base");
-			var token = localStorage.getItem("token");
-			var Authorization = "Bearer " + token;
-			var relatedobj = JSON.parse(localStorage.getItem('reltArray'));
-			var repaksVal = localStorage.getItem("repaksVal");
+		.mui-content {
+			position: relative;
+			padding-bottom: 2%;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="detail">
+
+	</div>
+	<script type="text/javascript" src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+	<script>
+		var base = localStorage.getItem("base");
+		var token = localStorage.getItem("token");
+		var Authorization = "Bearer " + token;
+		var relatedobj = JSON.parse(localStorage.getItem('reltArray'));
+		var repaksVal = localStorage.getItem("repaksVal");
+		var urlLink = 'https://www.goodb2b.cn/mealApptest/img/icon.png';
+		var wxtitle = "庆开业,分享喜悦";
+		var wxDesc = "小玎小珰活动开始了,开来参加哦~";
+
+		function pageUi(_adverIdVal) {
 			$.ajax({
 				type: "post",
 				url: base + "sale_inte/system/adverTest.action",
@@ -26,14 +55,124 @@
 				},
 				data: {
 					"pinpaiId": relatedobj.pi,
-					"adverId": repaksVal
+					"adverId": _adverIdVal
 				},
-				success: function(result) {
-					console.log(result);
-					$('#detail').html(result.data);
+				success: function (result) {
+					$('#detail').html(result.data.html);
+					if(result.data.shareTitle == "" || result.data.shareTitle == null){
+						wxtitle = "庆开业,分享喜悦";
+					}else if(result.data.shareDes == "" || result.data.shareDes == null){
+						wxDesc = "小玎小珰活动开始了,开来参加哦~";
+					}else if(result.data.shareImgPath == "" || result.data.shareImgPath == null){
+						urlLink = 'https://www.goodb2b.cn/mealApptest/img/icon.png';
+					}else{
+						urlLink = result.data.shareImgPath;
+						wxtitle = result.data.shareTitle;
+						wxDesc = result.data.shareDes;
+					}
 				}
 			});
-		</script>
-	</body>
+		}
+
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("?");
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] == variable) {
+					return pair[1];
+				}
+			}
+			return (false);
+		}
+		var adverIdVal = getQueryVariable("adverId");
+		if (adverIdVal == false) {
+			pageUi(repaksVal);
+		} else {
+			pageUi(adverIdVal);
+		}
+
+
+
+
+		var getTimestamp=new Date().getTime();
+		var urlCode = "https://www.goodb2b.cn/robert/sale_inte/wxController.action?pinpaiID=" + relatedobj.pi + ""+ "&sad=" + encodeURIComponent("https://www.goodb2b.cn/mealApptest/html/discover_details.html?adverId=") + repaksVal + "&" +getTimestamp+"";
+		//var urlCode = "https://www.goodb2b.cn/mealApptest/html/discover_details.html";
+		var appid, tp, noncestr, sie;
+		var urlHref = location.href.split('#')[0];
+		$.ajax({
+			type: "post",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+				"Authorization": Authorization
+			},
+			data: {
+				"pinpaiId": 1,
+				"url": urlHref
+			},
+			dataType: "json",
+			async: false,
+			url: base + "sale_inte/wx/jssdkConfig.action",
+			success: function (result) {
+				appid = result.data.appId;
+				tp = result.data.timestamp;
+				noncestr = result.data.nonceStr;
+				sie = result.data.signature;
+				wx.config({
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: appid, // 必填，公众号的唯一标识
+					timestamp: tp, // 必填，生成签名的时间戳
+					nonceStr: noncestr, // 必填，生成签名的随机串
+					signature: sie, // 必填，签名
+					jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+				});
+			}
+		})
+
+
+		
+		wx.ready(function () {
+			// wx.updateAppMessageShareData({
+			// 	title: wxtitle, // 分享标题
+			// 	desc: wxDesc, // 分享描述
+			// 	link: urlCode, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			// 	imgUrl: urlLink, // 分享图标
+			// 	success: function (rel) {
+
+			// 	}
+			// });
+
+			wx.onMenuShareAppMessage({ //发送给朋友
+            	title: wxtitle, // 分享标题
+				desc: wxDesc, // 分享描述
+				link: urlCode, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+				imgUrl: urlLink, // 分享图标
+				success: function () {
+
+				}
+			});
+
+			wx.onMenuShareTimeline({//朋友圈
+				title: wxtitle, // 分享标题
+				link: urlCode, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+				imgUrl: urlLink, // 分享图标
+				success: function () {
+
+				}
+			});
+		});
+
+
+
+
+		function goIndex() {
+			sessionStorage.setItem("historyIndex", 0);
+			location.href = "https://www.goodb2b.cn/mealApptest/html/template.html?tk=" + token + "&pinpaiID=" + relatedobj.pi + "";
+		}
+		
+
+
+	</script>
+</body>
 
 </html>

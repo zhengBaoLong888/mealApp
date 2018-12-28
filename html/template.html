@@ -93,7 +93,6 @@
 		<script type="text/javascript" src="../js/script.js"></script>
 		<script>
 			mui.init();
-			var ua = navigator.userAgent.toLowerCase();
 
 			function getQueryVariable(variable) {
 				var query = window.location.search.substring(1);
@@ -130,7 +129,6 @@
 					async: false,
 					url: base + "sale_inte/wx/jssdkConfig.action",
 					success: function(result) {
-						console.log(result);
 						appid = result.data.appId;
 						tp = result.data.timestamp;
 						noncestr = result.data.nonceStr;
