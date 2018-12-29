@@ -57,12 +57,6 @@
 		var serverTime, endTime;
 
 
-		$('#goIndex').click(function () {
-			var historyIndex = 0;
-			sessionStorage.setItem("historyIndex", historyIndex);
-			location.href = "https://www.goodb2b.cn/mealApptest/html/template.html?tk=" + token + "&pinpaiID=" + relatedobj.pi + "";
-		})
-
 		function isReceive(_couponsId) {
 			$.ajax({
 				type: "post",
@@ -169,7 +163,7 @@
 			var yad = myDate.getDate();
 			var ph = year + "-" + mo + "-" + yad + " " + b;
 
-			var date1 = new Date(a);
+			var date1 = new Date(time1);
 			var date2 = new Date(ph);
 
 			var s1 = date1.getTime(),

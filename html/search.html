@@ -268,9 +268,9 @@
 						picture = $(this).find('.picture').attr("src");
 						$('.row1_col_1').attr("src", picture);
 						$('.row2_col_2_p1').html(orderGoodsName);
-						$('.row2_detils').html("背景描述：" + detal);
-						$('.row2_effec').html("美容养颜功效：" + effec);
-						$('.row2_indexLog').html("健康指标：" + indexLog);
+						$('.row2_detils').html(detal);
+						$('.row2_effec').html(effec);
+						$('.row2_indexLog').html(indexLog);
 						$('#taske_pirce').html($('.list_liStyle').eq(taskeSlectorIndex).find('.price').text());
 						$('.new_tasteChoose').show();
 						getTask(proIdVal);
