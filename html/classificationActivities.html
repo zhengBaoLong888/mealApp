@@ -155,15 +155,6 @@
 						async: true,
 						success: function (resultActivity) {
 							for (t in productCallback) {
-								var a = "flase";
-								for (var i = 0; i < resultActivity.data.length; i++) {
-									if (resultActivity.data[i].planType == 3 && productCallback[t].isBargain == 1) {
-										a = "ture";
-										break;
-									} else {
-										a = "false";
-									}
-								}
 								for (io in resultActivity.data) {
 									if (productCallback[t].proType == 1 && ca == 'mz' && productCallback[t].isPresented == 1 && resultActivity.data[io].planType == 4) {
 										productListHtml += "<li class='list_liStyle' data-isSaled='" + productCallback[t].isSaled + "' data-isBargain='" + productCallback[t].isBargain + "' data-isPresented='" + productCallback[t].isPresented + "'  data-isDiscount='" + productCallback[t].isDiscount + "' data-isMoneyOff='" + productCallback[t].isMoneyOff + "' data-planType=''>"
@@ -242,6 +233,11 @@
 										}
 										productListHtml += "<div class='list_sub_title'>" + productCallback[t].proName + "</div>"
 										productListHtml += "<div class='score-sale'>"
+										productListHtml += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + productCallback[
+											t].price + "</span>元</span>"
+										productListHtml += "<span style='margin-left:20px;text-decoration:line-through;'>原价:" + productCallback[
+											t].origionPrice + "元</span>"
+
 										productListHtml += "<span>价格</span>&nbsp&nbsp<span class='price' style='color:red;'>" + productCallback[t].price + "</span>元</span>"
 										productListHtml += "</div>"
 										productListHtml += "<div class='order-bgHide spms'>" + productCallback[t].bg + "</div>"
@@ -256,7 +252,7 @@
 										productListHtml += "</ul>"
 										productListHtml += "<input class='proId' type='hidden' value='" + productCallback[t].proId + "'/>"
 										productListHtml += "</li>"
-									} else if (productCallback[t].proType == 1 && ca == 'mj' && productCallback[t].isBargain == 1 && resultActivity.data[io].planType == 2) {
+									} else if (productCallback[t].proType == 1 && ca == 'mj' && productCallback[t].isMoneyOff == 1 && resultActivity.data[io].planType == 2) {
 										productListHtml += "<li class='list_liStyle' data-isSaled='" + productCallback[t].isSaled + "' data-isBargain='" + productCallback[t].isBargain + "' data-isPresented='" + productCallback[t].isPresented + "'  data-isDiscount='" + productCallback[t].isDiscount + "' data-isMoneyOff='" + productCallback[t].isMoneyOff + "' data-planType=''>"
 										productListHtml += "<ul class='list_sub_ul'>"
 										if (productCallback[t].imgs == '') {
