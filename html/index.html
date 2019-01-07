@@ -65,29 +65,30 @@
 			<div class="activity">
 				<ul class="activity_row1 defindWidth">
 					<li>
-						<a class="classificationActivities" data-rel="tj">
-							<img src="https://www.goodb2b.cn/xdxd_file/pic_tj.jpg" />
+						<a class="classificationActivities" onclick="poinet('zk');">
+							<img src="https://www.goodb2b.cn/xdxd_file/indexHd_5.png" />
 						</a>
 					</li>
 					<li>
-						<img id="pztc" src="https://www.goodb2b.cn/xdxd_file/pic_pztc.png" />
+						<a class="classificationActivities" onclick="poinet('mz');">
+						<img id="pztc" src="https://www.goodb2b.cn/xdxd_file/indexHd_4.png" />
 						</a>
 					</li>
 				</ul>
 				<ul class="activity_row2 defindWidth">
 					<li>
-						<a class="classificationActivities" data-rel="zk">
-							<img src="https://www.goodb2b.cn/xdxd_file/pic_zk.png" />
+						<a class="classificationActivities">
+							<img src="https://www.goodb2b.cn/xdxd_file/indexHd_1.png" />
 						</a>
 					</li>
 					<li>
-						<a class="classificationActivities" data-rel="mz">
-							<img src="https://www.goodb2b.cn/xdxd_file/pic_mz.png" />
+						<a class="classificationActivities">
+							<img src="https://www.goodb2b.cn/xdxd_file/indexHd_2.png" />
 						</a>
 					</li>
 					<li>
-						<a class="classificationActivities" data-rel="mj">
-							<img src="https://www.goodb2b.cn/xdxd_file/pic_mj.png" />
+						<a class="classificationActivities">
+							<img src="https://www.goodb2b.cn/xdxd_file/indexHd_3.png" />
 						</a>
 					</li>
 				</ul>
@@ -673,9 +674,9 @@
 		}
 
 		//品质套餐
-		$('#pztc').click(function () {
-			location.href = 'planList.html';
-		});
+		// $('#pztc').click(function () {
+		// 	location.href = 'planList.html';
+		// });
 
 		$('#cancel').click(function () {
 			$('.new_tasteChoose').hide();
@@ -936,10 +937,11 @@
 		//禁止滑动底层容器
 		document.querySelector('.switchStore').removeEventListener('touchmove', bodyScroll, false);
 
-		$('.classificationActivities').click(function () {
-			var Ca = $(this).attr("data-rel");
-			localStorage.setItem("ca", Ca);
+
+
+		function poinet(_hd){
+			localStorage.setItem("ca", _hd);
 			location.href = 'classificationActivities.html';
-		})
+		}
 	</script>
 </body>

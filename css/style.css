@@ -122,6 +122,7 @@ header {
 
 .activity {
 	padding-bottom: 20px;
+	
 }
 
 .activity ul {
@@ -511,5 +512,8 @@ button:enabled:active {
 	padding: 6px 12px;
 	border:1px solid #007aff;
 	background-color: #007aff;
+	border-radius: 10px;
+}
+.activity_row2 img{
 	border-radius: 10px;
 }
